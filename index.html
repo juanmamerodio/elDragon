@@ -1,440 +1,2648 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Arquitectura del Sistema de Peaje | iOS 26 Design</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#061512">
+    <title>LA RESURRECCIÓN DEL DRAGÓN (2026) — Sinopsis Oficial, Historia Completa & Descarga DCP</title>
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
+    <!-- Three.js for 3D WebGL Indochina Scene -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Google Fonts: Cinzel Decorative, Cormorant Garamond, Plus Jakarta Sans, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        indochina: {
+                            abyss: '#040d0b',
+                            jadeDark: '#071a16',
+                            jade: '#0d2e26',
+                            jadeLight: '#164a3e',
+                            emerald: '#1f6e5c',
+                            celadon: '#76b5a0',
+                            crimsonDark: '#3b0a0e',
+                            crimson: '#7a161d',
+                            vermilion: '#b8252b',
+                            coral: '#e04f44',
+                            goldDark: '#785c12',
+                            gold: '#c9a23f',
+                            goldBright: '#f2cf66',
+                            amber: '#d97724',
+                            plumDark: '#1f0b24',
+                            plum: '#3d1547',
+                            silk: '#f4ebd9',
+                            parchment: '#e2d1b3',
+                            bronze: '#8c6d46'
+                        }
+                    },
+                    fontFamily: {
+                        display: ['"Cinzel Decorative"', 'serif'],
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    }
+                }
+            }
+        };
+    </script>
+
     <style>
+        /* ==========================================================================
+           1. CORE DESIGN TOKENS & VARIABLES (SOBER INDOCHINA MAXIMALISM + iOS 27)
+           ========================================================================== */
         :root {
-            /* iOS 26 / VisionOS inspired color palette */
-            --apple-bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.8);
-            --text-primary: #1d1d1f;
-            --text-secondary: #86868b;
-            --accent-blue: #007aff;
-            --shadow-glass: 0 24px 48px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0,0,0,0.02);
+            --bg-abyss: #040d0b;
+            --bg-jade-deep: #071a16;
+            --bg-jade-mid: #0d2e26;
+            --bg-crimson-lacquer: #5e1116;
+            --bg-plum-velvet: #270e2e;
+            --accent-gold: #c9a23f;
+            --accent-gold-bright: #f5d77f;
+            --accent-vermilion: #c92a2a;
+            --accent-celadon: #68b096;
+            --accent-amber: #df7b26;
+            --text-silk: #f4ebd9;
+            --text-parchment: #d6c3a5;
+            --text-muted: #8fa89e;
+            --safe-top: env(safe-area-inset-top, 16px);
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
+            --safe-left: env(safe-area-inset-left, 0px);
+            --safe-right: env(safe-area-inset-right, 0px);
+            --ios27-spring: cubic-bezier(0.22, 1, 0.36, 1);
+            --ios27-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #f5f5f7;
-            background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,0.03) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,0.03) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,0.03) 0, transparent 50%);
-            color: var(--text-primary);
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
             margin: 0;
             padding: 0;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            background-color: var(--bg-abyss);
+            color: var(--text-silk);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            selection-background-color: var(--accent-vermilion);
+            selection-color: var(--accent-gold-bright);
         }
 
-        /* Ambient animated background bubbles */
-        .ambient-bg {
+        ::selection {
+            background: var(--accent-vermilion);
+            color: var(--accent-gold-bright);
+        }
+
+        /* ==========================================================================
+           2. CUSTOM SCROLLBAR & MAXIMALIST DAMASK TEXTURES
+           ========================================================================== */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #040d0b;
+            border-left: 1px solid rgba(201, 162, 63, 0.25);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #7a161d 0%, #c9a23f 50%, #0d2e26 100%);
+            border-radius: 5px;
+            border: 1px solid #f5d77f;
+        }
+
+        /* Indochina Silk Lattice Pattern Overlay */
+        .indochina-damask-bg {
+            background-color: var(--bg-abyss);
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(122, 22, 29, 0.28) 0%, transparent 45%),
+                radial-gradient(circle at 85% 30%, rgba(201, 162, 63, 0.16) 0%, transparent 50%),
+                radial-gradient(circle at 50% 75%, rgba(22, 74, 62, 0.35) 0%, transparent 55%),
+                radial-gradient(circle at 20% 85%, rgba(61, 21, 71, 0.3) 0%, transparent 45%),
+                repeating-linear-gradient(45deg, rgba(201, 162, 63, 0.03) 0px, rgba(201, 162, 63, 0.03) 1px, transparent 1px, transparent 24px),
+                repeating-linear-gradient(-45deg, rgba(201, 162, 63, 0.03) 0px, rgba(201, 162, 63, 0.03) 1px, transparent 1px, transparent 24px);
+        }
+
+        /* Ornate Double Frame with Corner Filigree */
+        .maximal-frame {
+            position: relative;
+            background: linear-gradient(145deg, rgba(7, 26, 22, 0.92) 0%, rgba(4, 13, 11, 0.96) 55%, rgba(42, 9, 13, 0.88) 100%);
+            border: 1px solid rgba(201, 162, 63, 0.55);
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.85),
+                inset 0 0 0 4px rgba(4, 13, 11, 0.9),
+                inset 0 0 0 5px rgba(201, 162, 63, 0.3),
+                0 0 35px rgba(201, 162, 63, 0.12);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            transition: transform 0.5s var(--ios27-spring), box-shadow 0.5s var(--ios27-spring), border-color 0.4s ease;
+        }
+
+        .maximal-frame:hover {
+            border-color: rgba(245, 215, 127, 0.85);
+            box-shadow: 
+                0 28px 65px rgba(0, 0, 0, 0.92),
+                inset 0 0 0 4px rgba(4, 13, 11, 0.9),
+                inset 0 0 0 5px rgba(245, 215, 127, 0.5),
+                0 0 45px rgba(184, 37, 43, 0.28);
+        }
+
+        .corner-ornament {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .corner-tl { top: 6px; left: 6px; border-top: 2px solid #f2cf66; border-left: 2px solid #f2cf66; }
+        .corner-tr { top: 6px; right: 6px; border-top: 2px solid #f2cf66; border-right: 2px solid #f2cf66; }
+        .corner-bl { bottom: 6px; left: 6px; border-bottom: 2px solid #f2cf66; border-left: 2px solid #f2cf66; }
+        .corner-br { bottom: 6px; right: 6px; border-bottom: 2px solid #f2cf66; border-right: 2px solid #f2cf66; }
+
+        .corner-ornament::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border: 1px solid #e04f44;
+            background: rgba(184, 37, 43, 0.6);
+        }
+        .corner-tl::after { top: 3px; left: 3px; }
+        .corner-tr::after { top: 3px; right: 3px; }
+        .corner-bl::after { bottom: 3px; left: 3px; }
+        .corner-br::after { bottom: 3px; right: 3px; }
+
+        /* Imperial Gold Text Foil */
+        .gold-foil-text {
+            background: linear-gradient(135deg, #fff3c4 0%, #c9a23f 28%, #f5d77f 50%, #9c7316 75%, #ffeaa0 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: foilShimmer 6s linear infinite;
+        }
+
+        @keyframes foilShimmer {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* Vermilion Seal Stamp (Hanko / Imperial Seal style) */
+        .imperial-seal {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e04f44;
+            background: rgba(122, 22, 29, 0.85);
+            color: #ffdfcc;
+            font-family: 'Cinzel Decorative', serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.6), 0 0 15px rgba(224, 79, 68, 0.4);
+            letter-spacing: 0.08em;
+        }
+
+        /* ==========================================================================
+           3. 3D PERSPECTIVE & CARD TILT EFFECTS
+           ========================================================================== */
+        .perspective-stage {
+            perspective: 1400px;
+            transform-style: preserve-3d;
+        }
+
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.35s var(--ios27-spring), box-shadow 0.35s var(--ios27-spring);
+            will-change: transform;
+        }
+
+        .card-3d-layer {
+            transform: translateZ(28px);
+        }
+
+        /* Floating Lantern Glow Keyframes */
+        @keyframes lanternFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            50% { transform: translateY(-12px) rotate(1.5deg) scale(1.03); }
+        }
+
+        .animate-lantern {
+            animation: lanternFloat 5s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(201, 162, 63, 0.3), 0 0 30px rgba(184, 37, 43, 0.2); }
+            50% { box-shadow: 0 0 28px rgba(242, 207, 102, 0.65), 0 0 55px rgba(224, 79, 68, 0.45); }
+        }
+
+        .glow-pulse {
+            animation: pulseGlow 3.5s infinite ease-in-out;
+        }
+
+        /* ==========================================================================
+           4. YOUTUBE EMBED PLACEHOLDER & AMBIENT LIGHT SYSTEM
+           ========================================================================== */
+        .yt-ambient-glow {
+            position: absolute;
+            inset: -25px;
+            background: conic-gradient(from 0deg at 50% 50%, #b8252b, #c9a23f, #1f6e5c, #3d1547, #b8252b);
+            filter: blur(45px);
+            opacity: 0.55;
+            z-index: 0;
+            animation: rotateAmbient 14s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotateAmbient {
+            0% { transform: rotate(0deg) scale(0.98); }
+            50% { transform: rotate(180deg) scale(1.04); }
+            100% { transform: rotate(360deg) scale(0.98); }
+        }
+
+        /* Custom Range Sliders for Video Scrubber & Latency Controls */
+        input[type="range"].maximal-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(244, 235, 217, 0.2);
+            border-radius: 999px;
+            outline: none;
+        }
+        input[type="range"].maximal-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #f2cf66;
+            border: 2px solid #b8252b;
+            box-shadow: 0 0 12px #f2cf66;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        input[type="range"].maximal-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.25);
+        }
+
+        /* ==========================================================================
+           5. EXHAUSTIVE MEDIA QUERIES FOR iOS 27, MOBILE, FOLDABLES & ULTRA-WIDE
+           ========================================================================== */
+        /* iOS 27 Dynamic Island & Spatial Glass Pill */
+        .ios27-spatial-island {
+            padding-top: max(0.5rem, var(--safe-top));
+            backdrop-filter: blur(28px) saturate(210%);
+            -webkit-backdrop-filter: blur(28px) saturate(210%);
+            background: linear-gradient(90deg, rgba(4, 13, 11, 0.88), rgba(42, 9, 13, 0.85), rgba(7, 26, 22, 0.88));
+            border-bottom: 1px solid rgba(201, 162, 63, 0.45);
+        }
+
+        .ios27-bottom-dock {
+            padding-bottom: max(0.6rem, var(--safe-bottom));
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            background: linear-gradient(180deg, rgba(7, 26, 22, 0.92) 0%, rgba(4, 13, 11, 0.98) 100%);
+            border-top: 1px solid rgba(201, 162, 63, 0.5);
+            box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.85);
+        }
+
+        /* Small Mobile (iPhone SE / iOS 27 Compact Mini: <= 390px) */
+        @media screen and (max-width: 390px) {
+            .hero-title-responsive {
+                font-size: 1.85rem !important;
+                line-height: 1.15 !important;
+            }
+            .maximal-frame {
+                padding: 0.95rem !important;
+            }
+            .yt-controls-bar {
+                padding: 0.4rem 0.6rem !important;
+                font-size: 0.72rem !important;
+            }
+            .chapter-dropcap::first-letter {
+                font-size: 2.8rem !important;
+            }
+        }
+
+        /* Standard iOS 27 Pro & Pro Max Portrait (391px - 767px) */
+        @media screen and (min-width: 391px) and (max-width: 767px) {
+            .hero-title-responsive {
+                font-size: 2.35rem !important;
+                line-height: 1.12 !important;
+            }
+            .mobile-scroll-snap {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                gap: 1rem;
+                padding-bottom: 0.75rem;
+            }
+            .mobile-scroll-snap > * {
+                scroll-snap-align: center;
+                flex: 0 0 86%;
+            }
+        }
+
+        /* Mobile Landscape & iOS 27 StandBy Cinema Mode */
+        @media screen and (max-height: 500px) and (orientation: landscape) {
+            .ios27-bottom-dock {
+                display: none !important;
+            }
+            .hero-section-wrap {
+                padding-top: 4rem !important;
+            }
+        }
+
+        /* Tablet / iPadOS 27 & Foldables (768px - 1024px) */
+        @media screen and (min-width: 768px) and (max-width: 1024px) {
+            .hero-title-responsive {
+                font-size: 3.25rem !important;
+            }
+        }
+
+        /* High Refresh Rate ProMotion 120Hz / Spatial Display Media Query */
+        @media (prefers-reduced-motion: no-preference) {
+            .smooth-spring {
+                transition: all 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+            }
+        }
+
+        /* Literary Dropcap for the Story Reader */
+        .chapter-dropcap::first-letter {
+            float: left;
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 3.8rem;
+            line-height: 0.85;
+            padding-top: 4px;
+            padding-right: 12px;
+            padding-bottom: 4px;
+            color: #f2cf66;
+            text-shadow: 0 0 18px rgba(184, 37, 43, 0.85);
+        }
+
+        /* Three.js Background Canvas */
+        #threejs-dragon-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: -1;
-            overflow: hidden;
-            background: linear-gradient(to bottom right, #f2f2f7, #e5e5ea);
-        }
-        .ambient-blob {
-            position: absolute;
-            filter: blur(90px);
-            opacity: 0.6;
-            border-radius: 50%;
-            animation: float 20s infinite ease-in-out alternate;
-        }
-        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #e0eaff; animation-delay: 0s; }
-        .blob-2 { bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: #fae8ff; animation-delay: -5s; }
-        .blob-3 { top: 40%; left: 30%; width: 30vw; height: 30vw; background: #e0f2fe; animation-delay: -10s; }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(5%, 10%) scale(1.1); }
-        }
-
-        /* Glassmorphism Cards */
-        .ios-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border: 1px solid var(--glass-border);
-            border-radius: 32px;
-            box-shadow: var(--shadow-glass);
-            padding: 2.5rem;
-            margin-bottom: 2.5rem;
-            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
-            overflow: hidden;
-        }
-        
-        @media (max-width: 768px) {
-            .ios-card {
-                padding: 1.5rem;
-                border-radius: 24px;
-            }
-        }
-
-        .ios-card:hover {
-            transform: translateY(-4px) scale(1.005);
-            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.06), 0 8px 16px rgba(0,0,0,0.03);
-        }
-
-        /* Typography */
-        h1 { font-weight: 700; letter-spacing: -0.04em; }
-        h2 { font-weight: 600; letter-spacing: -0.02em; color: var(--text-primary); }
-        p.subtitle { color: var(--text-secondary); font-size: 1.1rem; letter-spacing: -0.01em; }
-
-        /* Badge/Tag styling */
-        .ios-badge {
-            display: inline-block;
-            background: rgba(0, 122, 255, 0.1);
-            color: var(--accent-blue);
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 1rem;
-        }
-
-        /* Mermaid Container */
-        .mermaid {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            overflow-x: auto;
-            padding: 1rem 0;
-            /* Scrollbar styling for webkit */
-            scrollbar-width: thin;
-            scrollbar-color: rgba(0,0,0,0.2) transparent;
-        }
-        .mermaid::-webkit-scrollbar { height: 6px; }
-        .mermaid::-webkit-scrollbar-track { background: transparent; }
-        .mermaid::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.2); border-radius: 20px; }
-
-        /* Header Navigation */
-        .nav-glass {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: rgba(245, 245, 247, 0.72);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            z-index: 0;
+            pointer-events: auto;
         }
     </style>
 </head>
-<body>
 
-    <div class="ambient-bg">
-        <div class="ambient-blob blob-1"></div>
-        <div class="ambient-blob blob-2"></div>
-        <div class="ambient-blob blob-3"></div>
+<body class="indochina-damask-bg min-h-screen relative selection:bg-indochina-vermilion selection:text-indochina-goldBright pb-24 lg:pb-12">
+
+    <!-- 3D WebGL Interactive Scene (Three.js) -->
+    <canvas id="threejs-dragon-canvas" aria-label="Escena 3D Interactiva Indochina del Paraná y el Dragón"></canvas>
+
+    <!-- Floating Ambient Control Badge for 3D Camera -->
+    <div class="fixed bottom-20 right-4 lg:bottom-6 lg:right-6 z-40 flex flex-col gap-2 items-end pointer-events-auto">
+        <button id="toggle-3d-camera-btn" onclick="toggle3DCameraMode()" class="px-3.5 py-2 rounded-full bg-indochina-jadeDark/90 border border-indochina-gold/60 text-xs font-mono text-indochina-goldBright shadow-2xl flex items-center gap-2 hover:bg-indochina-crimson/90 transition-all">
+            <i class="fa-solid fa-cube text-indochina-coral animate-spin" style="animation-duration: 8s;"></i>
+            <span id="camera-mode-label">3D Órbita: Paraná Imperial</span>
+        </button>
+        <button id="toggle-soundscape-btn" onclick="toggleAmbientSoundscape()" class="px-3.5 py-2 rounded-full bg-indochina-crimsonDark/90 border border-indochina-gold/60 text-xs font-mono text-indochina-silk shadow-2xl flex items-center gap-2 hover:border-indochina-goldBright transition-all">
+            <i id="soundscape-icon" class="fa-solid fa-volume-xmark text-indochina-gold"></i>
+            <span id="soundscape-label">Banda Sonora: Silenciada</span>
+        </button>
     </div>
 
-    <nav class="nav-glass px-6 py-4">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <div class="text-xl font-bold tracking-tight text-gray-900 flex items-center gap-2">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
-                TollFlow Arch
-            </div>
-            <div class="text-sm font-medium text-gray-500 hidden sm:block">
-                Spec v2.0 • iOS 26 Spatial Interface
-            </div>
-        </div>
-    </nav>
-
-    <main class="max-w-5xl mx-auto px-4 py-12 sm:py-20">
+    <!-- ==========================================================================
+         TOP NAVIGATION & iOS 27 SPATIAL DYNAMIC ISLAND BAR
+         ========================================================================== -->
+    <header class="fixed top-0 left-0 right-0 z-50 ios27-spatial-island">
+        <!-- Decorative Top Filigree Ribbon -->
+        <div class="w-full h-1 bg-gradient-to-r from-indochina-crimson via-indochina-goldBright to-indochina-emerald"></div>
         
-        <header class="text-center mb-16 sm:mb-24">
-            <h1 class="text-4xl sm:text-6xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-gray-900 via-gray-800 to-gray-600">
-                Sistema de Gestión de Peajes
-            </h1>
-            <p class="subtitle max-w-2xl mx-auto leading-relaxed">
-                Documentación técnica de arquitectura. Módulo de carga de clientes, conteo de pases por estación, tarifario dinámico y facturación mensual.
-            </p>
-        </header>
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-2">
+            <!-- Brand Emblem -->
+            <a href="#hero-cinema" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indochina-crimson to-indochina-jadeDark border-2 border-indochina-gold flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-dragon text-indochina-goldBright text-lg"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-display font-bold text-xs sm:text-sm tracking-widest gold-foil-text">CAMPANA · INDOCHINA</span>
+                        <span class="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-indochina-vermilion/30 border border-indochina-coral text-indochina-goldBright rounded">DCP 4K</span>
+                    </div>
+                    <p class="text-[10px] sm:text-xs text-indochina-celadon font-mono tracking-tight">EXPEDIENTE #027 · LA RESURRECCIÓN DEL DRAGÓN</p>
+                </div>
+            </a>
 
-        <section class="ios-card">
-            <span class="ios-badge">Visión de Negocio</span>
-            <h2 class="text-2xl sm:text-3xl mb-3">1. Diagrama Entidad-Relación (DER)</h2>
-            <p class="text-gray-500 mb-8 leading-relaxed">Modelo conceptual de las entidades principales del negocio y sus relaciones. Describe cómo un Cliente se vincula a sus Vehículos y la responsabilidad de los pases en las Estaciones.</p>
-            <div class="mermaid">
-                erDiagram
-                    CLIENTE ||--|{ VEHICULO : "posee"
-                    VEHICULO ||--o{ PASE : "realiza"
-                    ESTACION_PEAJE ||--o{ PASE : "registra"
-                    ESTACION_PEAJE ||--|{ TARIFA : "tiene"
-                    CLIENTE ||--o{ FACTURA_MENSUAL : "recibe"
-                    FACTURA_MENSUAL ||--|{ PASE : "consolida"
+            <!-- iOS 27 Dynamic Island Live Status Pill -->
+            <div id="dynamic-island-pill" class="hidden md:flex items-center gap-3 px-4 py-1.5 rounded-full bg-black/80 border border-indochina-gold/50 shadow-inner text-xs font-mono">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span id="island-status-text" class="text-indochina-silk">SERVIDOR PARANÁ-ISLA ACTIVO · 99.8% SEEDERS</span>
+                <span class="text-indochina-gold">|</span>
+                <span class="text-indochina-coral font-bold">iOS 27 SPATIAL READY</span>
+            </div>
+
+            <!-- Desktop Navigation Links -->
+            <nav class="hidden lg:flex items-center gap-1 xl:gap-2 text-xs font-semibold tracking-wider uppercase">
+                <a href="#reproductor-oficial" class="px-3 py-2 rounded-lg text-indochina-silk hover:text-indochina-goldBright hover:bg-indochina-jade/60 transition">
+                    <i class="fa-brands fa-youtube text-indochina-coral mr-1"></i> Película
+                </a>
+                <a href="#sinopsis-maximalista" class="px-3 py-2 rounded-lg text-indochina-silk hover:text-indochina-goldBright hover:bg-indochina-jade/60 transition">
+                    <i class="fa-solid fa-scroll text-indochina-gold mr-1"></i> Sinopsis
+                </a>
+                <a href="#manuscrito-completo" class="px-3 py-2 rounded-lg text-indochina-silk hover:text-indochina-goldBright hover:bg-indochina-jade/60 transition">
+                    <i class="fa-solid fa-book-open text-indochina-celadon mr-1"></i> Crónica (.MD)
+                </a>
+                <a href="#laboratorio-rumor" class="px-3 py-2 rounded-lg text-indochina-silk hover:text-indochina-goldBright hover:bg-indochina-jade/60 transition">
+                    <i class="fa-solid fa-diagram-project text-indochina-amber mr-1"></i> El Rumor
+                </a>
+                <a href="#simulador-cuello" class="px-3 py-2 rounded-lg text-indochina-silk hover:text-indochina-goldBright hover:bg-indochina-jade/60 transition">
+                    <i class="fa-solid fa-wifi text-indochina-coral mr-1"></i> El Cuello
+                </a>
+                <a href="#descarga-directa" class="ml-1 px-4 py-2 rounded-xl bg-gradient-to-r from-indochina-crimson via-indochina-vermilion to-indochina-amber border border-indochina-goldBright text-indochina-silk font-bold shadow-lg hover:scale-105 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-cloud-arrow-down"></i> Descargar Film
+                </a>
+            </nav>
+
+            <!-- Mobile Action Button -->
+            <a href="#descarga-directa" class="lg:hidden px-3 py-1.5 rounded-lg bg-gradient-to-r from-indochina-crimson to-indochina-vermilion border border-indochina-gold text-xs font-bold text-indochina-goldBright flex items-center gap-1.5">
+                <i class="fa-solid fa-download"></i> <span>4K LINK</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- ==========================================================================
+         MAIN CONTENT WRAPPER (Z-10 ABOVE THREE.JS CANVAS)
+         ========================================================================== -->
+    <main class="relative z-10 pt-20 sm:pt-24 lg:pt-28 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-16 sm:space-y-24">
+
+        <!-- ======================================================================
+             SECTION 1: HERO CINEMA & EMBEDDED YOUTUBE PLAYER ("LA RESURRECCIÓN DEL DRAGÓN")
+             ====================================================================== -->
+        <section id="hero-cinema" class="hero-section-wrap relative">
+            <!-- Ornate Top Imperial Banner -->
+            <div class="text-center max-w-4xl mx-auto mb-8 sm:mb-10 space-y-4">
+                <div class="inline-flex flex-wrap items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-indochina-crimsonDark/90 border border-indochina-gold/70 shadow-xl">
+                    <span class="imperial-seal px-2 py-0.5 text-[10px] rounded">ESTRENO MUNDIAL</span>
+                    <span class="text-xs font-mono uppercase tracking-widest text-indochina-goldBright">UN THRILLER PSICOLÓGICO DESDE LA ISLA DE CAMPANA HASTA EL PARANÁ</span>
+                    <span class="text-xs font-mono text-indochina-celadon">★ 9.7/10 CANNES UNDERGROUND</span>
+                </div>
+
+                <h1 class="hero-title-responsive font-display font-black text-4xl sm:text-5xl lg:text-7xl tracking-tight uppercase gold-foil-text drop-shadow-[0_6px_25px_rgba(184,37,43,0.75)]">
+                    La Resurrección del Dragón
+                </h1>
+
+                <p class="font-serif italic text-lg sm:text-2xl text-indochina-parchment max-w-3xl mx-auto leading-relaxed">
+                    «En Campana los secretos duran menos que una historia de Instagram... Cuando el cuello asoma por la esquina con mala señal, ya nadie pregunta a quién busca, sino <span class="text-indochina-goldBright font-semibold underline decoration-indochina-vermilion">quién se lo contó</span>.»
+                </p>
+
+                <!-- Technical Filmmaking Specs Ribbon -->
+                <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-2 text-[11px] sm:text-xs font-mono text-indochina-celadon">
+                    <span class="px-2.5 py-1 rounded bg-indochina-jadeDark/90 border border-indochina-gold/40"><i class="fa-solid fa-film text-indochina-gold mr-1"></i> ARRI ALEXA 65 ANAMÓRFICO</span>
+                    <span class="px-2.5 py-1 rounded bg-indochina-jadeDark/90 border border-indochina-gold/40"><i class="fa-solid fa-clock text-indochina-coral mr-1"></i> DURACIÓN: 2H 18M (DIRECTOR'S CUT)</span>
+                    <span class="px-2.5 py-1 rounded bg-indochina-jadeDark/90 border border-indochina-gold/40"><i class="fa-solid fa-volume-high text-indochina-goldBright mr-1"></i> DOLBY ATMOS · PARANÁ RAIN MIX</span>
+                    <span class="px-2.5 py-1 rounded bg-indochina-plumDark/90 border border-indochina-coral/50 text-indochina-goldBright"><i class="fa-brands fa-apple mr-1"></i> OPTIMIZADO iOS 27 PRO MOTION</span>
+                </div>
+            </div>
+
+            <!-- ==================================================================
+                 EMBEDDED YOUTUBE VIDEO PLACEHOLDER ("LA RESURRECCIÓN DEL DRAGÓN")
+                 ================================================================== -->
+            <div id="reproductor-oficial" class="relative max-w-5xl mx-auto">
+                <!-- Dynamic Ambient Light Glow Behind Player -->
+                <div id="yt-ambient-backdrop" class="yt-ambient-glow rounded-3xl"></div>
+
+                <!-- Maximalist Outer Frame around YouTube Embed -->
+                <div class="maximal-frame rounded-2xl sm:rounded-3xl p-2 sm:p-4 relative z-10">
+                    <div class="corner-ornament corner-tl"></div>
+                    <div class="corner-ornament corner-tr"></div>
+                    <div class="corner-ornament corner-bl"></div>
+                    <div class="corner-ornament corner-br"></div>
+
+                    <!-- Top Cinema Marquee Bar -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 mb-2 rounded-xl bg-black/70 border border-indochina-gold/30 text-xs font-mono">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+                            <span class="text-indochina-goldBright font-bold">YOUTUBE EMBED STREAM:</span>
+                            <span class="text-indochina-silk truncate">La resurrección del dragón (2026) - Película Completa / Tráiler Oficial [4K HDR]</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button onclick="toggleAmbientMode()" class="text-indochina-celadon hover:text-indochina-goldBright transition flex items-center gap-1" title="Modo Iluminación Indochina">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="ambient-toggle-label">Luz Ambiental: ON</span>
+                            </button>
+                            <button onclick="toggleDirectorCommentary()" class="text-indochina-amber hover:text-indochina-goldBright transition flex items-center gap-1">
+                                <i class="fa-solid fa-clapperboard"></i> <span id="commentary-toggle-label">Notas Director: ON</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- THE YOUTUBE EMBED CONTAINER (16:9 RESPONSIVE) -->
+                    <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-black border border-indochina-gold/50 shadow-2xl group select-none">
+                        
+                        <!-- Interactive Procedural Cinema Canvas (Renders the 5 Acts visually!) -->
+                        <canvas id="yt-cinema-canvas" class="w-full h-full block cursor-pointer" onclick="toggleYouTubePlay()"></canvas>
+
+                        <!-- YouTube Top Header Overlay (Channel Avatar, Title, Watch Later, Share) -->
+                        <div id="yt-top-bar" class="absolute top-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-b from-black/90 via-black/50 to-transparent flex items-center justify-between transition-opacity duration-300">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-indochina-crimson to-indochina-gold p-0.5 flex-shrink-0">
+                                    <div class="w-full h-full rounded-full bg-indochina-abyss flex items-center justify-center text-indochina-goldBright font-display font-bold text-sm">
+                                        🐉
+                                    </div>
+                                </div>
+                                <div class="min-w-0">
+                                    <h2 class="text-white font-sans font-semibold text-xs sm:text-base truncate drop-shadow">
+                                        La resurrección del dragón (2026) | Crónica de Pocho, Laura y Nico en Campana [Full HD / 4K]
+                                    </h2>
+                                    <p class="text-[11px] text-gray-300 font-mono flex items-center gap-2">
+                                        <span>Campana Noir Films Oficial</span>
+                                        <i class="fa-solid fa-circle-check text-sky-400 text-[10px]"></i>
+                                        <span class="hidden sm:inline">• 1,428,910 visualizaciones</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3 sm:gap-4 text-white flex-shrink-0">
+                                <button onclick="saveToWatchLater()" class="flex flex-col items-center opacity-90 hover:opacity-100 hover:text-indochina-goldBright transition">
+                                    <i class="fa-regular fa-clock text-sm sm:text-base"></i>
+                                    <span class="text-[10px] hidden sm:inline mt-0.5">Ver más tarde</span>
+                                </button>
+                                <button onclick="copyYouTubeEmbedLink()" class="flex flex-col items-center opacity-90 hover:opacity-100 hover:text-indochina-goldBright transition">
+                                    <i class="fa-solid fa-share text-sm sm:text-base"></i>
+                                    <span class="text-[10px] hidden sm:inline mt-0.5">Compartir</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Director's Live HUD Overlay inside Video -->
+                        <div id="director-hud-overlay" class="absolute top-16 left-4 right-4 sm:right-auto sm:max-w-md pointer-events-none transition-all duration-300">
+                            <div class="p-3 rounded-xl bg-black/75 border-l-4 border-indochina-gold backdrop-blur-md text-xs font-mono space-y-1 shadow-lg">
+                                <div class="flex items-center justify-between text-indochina-goldBright">
+                                    <span><i class="fa-solid fa-video mr-1"></i> <span id="hud-act-code">ACTO I · EL RÍO PARANÁ</span></span>
+                                    <span id="hud-lens-spec" class="text-indochina-coral">LENTE: 35MM ANAMÓRFICO T1.4</span>
+                                </div>
+                                <p id="hud-director-note" class="text-indochina-silk/90 leading-snug font-sans text-[11px]">
+                                    Plano secuencia sobre la lancha colectiva cruzando el Paraná al amanecer. Pocho observa en silencio mientras la niebla esconde la orilla de Campana.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Center Classic YouTube Red Play Button & Chapter Preview -->
+                        <div id="yt-center-play-overlay" onclick="toggleYouTubePlay()" class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px] cursor-pointer transition-opacity duration-300">
+                            <!-- Classic YouTube Rounded Red Button with Indochina Gold Trim -->
+                            <div class="relative group/btn">
+                                <div class="absolute -inset-4 rounded-full bg-indochina-vermilion/40 blur-xl group-hover/btn:bg-indochina-gold/50 transition"></div>
+                                <div class="w-20 h-14 sm:w-24 sm:h-16 rounded-2xl bg-[#FF0000] hover:bg-[#cc0000] border-2 border-indochina-goldBright/80 flex items-center justify-center shadow-[0_0_40px_rgba(255,0,0,0.7)] transition-transform duration-300 group-hover/btn:scale-110">
+                                    <i class="fa-solid fa-play text-white text-2xl sm:text-3xl ml-1"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 px-4 py-1.5 rounded-full bg-black/85 border border-indochina-gold/60 text-xs sm:text-sm font-display tracking-wider text-indochina-goldBright shadow-xl">
+                                REPRODUCIR «LA RESURRECCIÓN DEL DRAGÓN»
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Subtitle Track Inside Video -->
+                        <div class="absolute bottom-14 sm:bottom-16 left-4 right-4 text-center pointer-events-none">
+                            <span id="yt-live-subtitle" class="inline-block px-3.5 py-1.5 rounded-lg bg-black/85 border border-indochina-gold/40 text-indochina-silk font-serif italic text-sm sm:text-lg shadow-xl">
+                                «En Campana los secretos duran menos que una historia de Instagram...»
+                            </span>
+                        </div>
+
+                        <!-- YouTube Bottom Control Bar (Scrubber, Play/Pause, Chapters, CC, Settings, Fullscreen) -->
+                        <div class="yt-controls-bar absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/90 to-transparent px-3 sm:px-4 pt-4 pb-2.5 flex flex-col gap-1.5">
+                            <!-- Progress Bar / Chapter Scrubber -->
+                            <div class="flex items-center gap-2">
+                                <input id="yt-progress-slider" type="range" min="0" max="100" value="0" step="0.2" oninput="scrubYouTubeVideo(this.value)" class="maximal-slider" aria-label="Línea de tiempo de la película">
+                            </div>
+
+                            <!-- Controls Row -->
+                            <div class="flex items-center justify-between text-white text-xs sm:text-sm">
+                                <div class="flex items-center gap-3 sm:gap-4">
+                                    <button onclick="toggleYouTubePlay()" class="hover:text-indochina-goldBright transition" aria-label="Reproducir o Pausar">
+                                        <i id="yt-play-icon" class="fa-solid fa-play text-base"></i>
+                                    </button>
+                                    <button onclick="nextCinemaAct()" class="hover:text-indochina-goldBright transition" title="Siguiente Acto">
+                                        <i class="fa-solid fa-forward-step"></i>
+                                    </button>
+                                    <button onclick="toggleAmbientSoundscape()" class="hover:text-indochina-goldBright transition" title="Audio Sintetizado Cinematográfico">
+                                        <i id="yt-volume-icon" class="fa-solid fa-volume-high"></i>
+                                    </button>
+                                    <span class="font-mono text-[11px] sm:text-xs text-gray-200">
+                                        <span id="yt-current-time">00:00</span> / <span class="text-indochina-gold">2:18:45</span>
+                                    </span>
+                                    <span id="yt-chapter-pill" class="hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indochina-crimson/80 border border-indochina-gold/50 text-[11px] text-indochina-goldBright font-mono">
+                                        <i class="fa-solid fa-bookmark text-[9px]"></i> Capítulo 1: El Pibe de la Isla
+                                    </span>
+                                </div>
+
+                                <div class="flex items-center gap-3 sm:gap-4">
+                                    <button onclick="cycleVideoActSelector()" class="px-2 py-0.5 rounded bg-white/10 hover:bg-indochina-gold/30 border border-indochina-gold/40 text-[10px] font-mono text-indochina-goldBright">
+                                        CAMBIAR ESCENA (5 ACTOS)
+                                    </button>
+                                    <span class="px-1.5 py-0.5 rounded bg-indochina-vermilion text-[10px] font-mono font-bold">4K HDR</span>
+                                    <a href="https://www.youtube.com/results?search_query=La+resurreccion+del+dragon+pelicula" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 font-sans font-bold text-xs tracking-tight hover:text-red-500 transition" title="Ver en YouTube">
+                                        <i class="fa-brands fa-youtube text-red-600 text-base"></i>
+                                        <span class="hidden sm:inline">YouTube</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Chapter Switcher Pills below the YouTube Player -->
+                    <div class="mt-4 grid grid-cols-2 sm:grid-cols-5 gap-2">
+                        <button onclick="selectCinemaAct(0)" id="act-btn-0" class="act-selector-btn p-2.5 rounded-xl bg-indochina-crimson/80 border border-indochina-goldBright text-left transition hover:scale-[1.02]">
+                            <div class="text-[10px] font-mono text-indochina-goldBright">00:00 • ACTO I</div>
+                            <div class="text-xs font-bold text-indochina-silk truncate">Pocho & El Río Paraná</div>
+                        </button>
+                        <button onclick="selectCinemaAct(1)" id="act-btn-1" class="act-selector-btn p-2.5 rounded-xl bg-indochina-jadeDark/80 border border-indochina-gold/30 text-left transition hover:scale-[1.02]">
+                            <div class="text-[10px] font-mono text-indochina-celadon">28:14 • ACTO II</div>
+                            <div class="text-xs font-bold text-indochina-silk truncate">Laura & El Volumen Alto</div>
+                        </button>
+                        <button onclick="selectCinemaAct(2)" id="act-btn-2" class="act-selector-btn p-2.5 rounded-xl bg-indochina-jadeDark/80 border border-indochina-gold/30 text-left transition hover:scale-[1.02]">
+                            <div class="text-[10px] font-mono text-indochina-celadon">54:30 • ACTO III</div>
+                            <div class="text-xs font-bold text-indochina-silk truncate">Empresa Cero Clientes</div>
+                        </button>
+                        <button onclick="selectCinemaAct(3)" id="act-btn-3" class="act-selector-btn p-2.5 rounded-xl bg-indochina-jadeDark/80 border border-indochina-gold/30 text-left transition hover:scale-[1.02]">
+                            <div class="text-[10px] font-mono text-indochina-celadon">1:22:10 • ACTO IV</div>
+                            <div class="text-xs font-bold text-indochina-silk truncate">¡Nico, el Dragón!</div>
+                        </button>
+                        <button onclick="selectCinemaAct(4)" id="act-btn-4" class="act-selector-btn col-span-2 sm:col-span-1 p-2.5 rounded-xl bg-indochina-jadeDark/80 border border-indochina-gold/30 text-left transition hover:scale-[1.02]">
+                            <div class="text-[10px] font-mono text-indochina-celadon">1:51:05 • ACTO V</div>
+                            <div class="text-xs font-bold text-indochina-silk truncate">El Juicio Socrático</div>
+                        </button>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <section class="ios-card">
-            <span class="ios-badge">Persistencia en Base de Datos</span>
-            <h2 class="text-2xl sm:text-3xl mb-3">2. Diagrama Lógico Relacional (DLR)</h2>
-            <p class="text-gray-500 mb-8 leading-relaxed">Estructura detallada de las tablas en la base de datos, definiendo claves primarias (PK), claves foráneas (FK) y atributos clave para garantizar la integridad referencial.</p>
-            <div class="mermaid">
-                erDiagram
-                    CLIENTE {
-                        int id_cliente PK
-                        string cuit_dni UK
-                        string nombre_razon_social
-                        string email
-                    }
-                    VEHICULO {
-                        string patente PK
-                        int id_cliente FK
-                        string tipo_vehiculo
-                        string tag_rfid UK
-                    }
-                    ESTACION {
-                        int id_estacion PK
-                        string nombre_estacion
-                    }
-                    TARIFA {
-                        int id_tarifa PK
-                        int id_estacion FK
-                        string tipo_vehiculo
-                        decimal monto_actual
-                    }
-                    PASE {
-                        int id_pase PK
-                        string patente FK
-                        int id_estacion FK
-                        datetime fecha_hora
-                        decimal monto_cobrado
-                        boolean facturado
-                    }
-                    FACTURA {
-                        int id_factura PK
-                        int id_cliente FK
-                        int mes_periodo
-                        int anio_periodo
-                        decimal monto_total
-                        string estado_pago
-                    }
+        <!-- ======================================================================
+             SECTION 2: SINOPSIS EXHAUSTIVA & FICHA TÉCNICA DE CINEASTA
+             ====================================================================== -->
+        <section id="sinopsis-maximalista" class="space-y-10">
+            <!-- Ornate Section Header -->
+            <div class="flex flex-col items-center text-center space-y-2">
+                <div class="flex items-center gap-3 text-indochina-gold">
+                    <span class="h-[1px] w-12 sm:w-24 bg-gradient-to-r from-transparent to-indochina-gold"></span>
+                    <i class="fa-solid fa-torii-gate text-indochina-coral text-lg"></i>
+                    <span class="font-mono text-xs uppercase tracking-[0.25em] text-indochina-goldBright">ARCHIVO DE PRODUCCIÓN • SINOPSIS EXTENDIDA</span>
+                    <i class="fa-solid fa-torii-gate text-indochina-coral text-lg"></i>
+                    <span class="h-[1px] w-12 sm:w-24 bg-gradient-to-l from-transparent to-indochina-gold"></span>
+                </div>
+                <h2 class="font-display font-bold text-2xl sm:text-4xl lg:text-5xl gold-foil-text uppercase">
+                    Anatomía de un Rumor en el Delta
+                </h2>
+                <p class="font-serif text-base sm:text-xl text-indochina-parchment max-w-3xl">
+                    Cómo una historia adolescente en Campana se transforma en un neo-noir psicológico sobre la posverdad, la culpa compartida y el cuello más largo de la provincia de Buenos Aires.
+                </p>
+            </div>
 
-                    CLIENTE ||--|{ VEHICULO : ""
-                    CLIENTE ||--o{ FACTURA : ""
-                    VEHICULO ||--o{ PASE : ""
-                    ESTACION ||--|{ TARIFA : ""
-                    ESTACION ||--o{ PASE : ""
+            <!-- 3-Column Maximalist Grid: Sinopsis Central + Dossier Técnico + Crítica Internacional -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                
+                <!-- Left Column: Main Narrative Synopsis (7 cols) -->
+                <div class="lg:col-span-7 maximal-frame rounded-2xl p-6 sm:p-8 flex flex-col justify-between space-y-6">
+                    <div class="corner-ornament corner-tl"></div>
+                    <div class="corner-ornament corner-tr"></div>
+                    <div class="corner-ornament corner-bl"></div>
+                    <div class="corner-ornament corner-br"></div>
+
+                    <div class="space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-indochina-gold/30 pb-3">
+                            <span class="imperial-seal px-3 py-1 text-xs rounded">SINOPSIS OFICIAL DEL FILM</span>
+                            <span class="font-mono text-xs text-indochina-celadon">LOCACIÓN: CAMPANA / ISLA DEL PARANÁ</span>
+                        </div>
+
+                        <h3 class="font-serif font-bold text-2xl sm:text-3xl text-indochina-goldBright leading-tight">
+                            «La resurrección del dragón»: Cuando el teléfono descompuesto dicta sentencia de muerte social
+                        </h3>
+
+                        <p class="text-sm sm:text-base text-indochina-silk/90 leading-relaxed">
+                            En la ciudad ribereña de <strong>Campana</strong>, donde los secretos duran menos que una historia de Instagram y las versiones mutan en cada esquina, <strong>Juan Hernández («Pocho»)</strong> es un joven isleño marcado por una crianza rígida bajo los preceptos de los Testigos de Jehová. Todos los días cruza el turbio río Paraná en lancha hacia la escuela técnica con una obsesión silenciosa: reinventarse, crecer y escapar del molde familiar. Sin embargo, Pocho guarda una presión interna peligrosa: calla, observa y soporta hasta que el vaso rebalsa y estalla.
+                        </p>
+
+                        <p class="text-sm sm:text-base text-indochina-silk/90 leading-relaxed">
+                            Su vida da un vuelco al conocer a <strong>Laura</strong> a través de la música. Lo que comienza como un refugio luminoso pronto deriva en una tormenta emocional de infidelidades, reconciliaciones y batallas cotidianas vividas a un volumen ensordecedor. Cuando Juan decide cortar el vínculo para salvar su cordura y refugiarse junto a su mejor amigo en un delirante <em>emprendimiento corporativo de cero clientes</em>, comienza una segunda película: <strong>la que se narra a sus espaldas</strong>.
+                        </p>
+
+                        <p class="text-sm sm:text-base text-indochina-silk/90 leading-relaxed">
+                            De las cenizas del desamor emerge el antagonista más inolvidable del cine independiente rioplatense: <strong>Nico, «El Dragón»</strong>. Dotado de un cuello descomunalmente largo que dobla las esquinas varios segundos antes de que el resto de su anatomía termine de cargar —como si caminara con <em>mala señal de internet</em>—, Nico asume el rol de vengador justiciero. Alimentado por chismes deformados y por las propias indirectas motivacionales que Juan sube a sus redes, el Dragón acorrala a Pocho con una acusación devastadora. Pero en vez de puños, el clímax estalla con el arma más letal del guion: <strong>una cadena de preguntas socráticas al estilo de «El Mentalista» sin presupuesto</strong> que desnuda cómo una ciudad entera confundió su versión con la verdad.
+                        </p>
+                    </div>
+
+                    <!-- Thematic Pillars -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-indochina-gold/30">
+                        <div class="p-3 rounded-xl bg-indochina-abyss/80 border border-indochina-gold/30">
+                            <div class="text-indochina-goldBright font-mono text-xs font-bold mb-1"><i class="fa-solid fa-water mr-1"></i> EL CRUCE</div>
+                            <p class="text-xs text-indochina-parchment">El río Paraná como frontera física y mental entre la represión isleña y la ambición desmedida.</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-indochina-abyss/80 border border-indochina-coral/40">
+                            <div class="text-indochina-coral font-mono text-xs font-bold mb-1"><i class="fa-solid fa-comments mr-1"></i> LA MUTACIÓN</div>
+                            <p class="text-xs text-indochina-parchment">De «me hizo sufrir» a «me maltrataba» y a «le pegaba»: radiografía forense de una calumnia colectiva.</p>
+                        </div>
+                        <div class="p-3 rounded-xl bg-indochina-abyss/80 border border-indochina-celadon/40">
+                            <div class="text-indochina-celadon font-mono text-xs font-bold mb-1"><i class="fa-solid fa-scale-balanced mr-1"></i> EL ESPEJO</div>
+                            <p class="text-xs text-indochina-parchment">Nadie es inocente: el dolor de Laura, las indirectas de Pocho y el complejo de héroe de Nico.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Director's Vision & Technical Dossier (5 cols) -->
+                <div class="lg:col-span-5 maximal-frame rounded-2xl p-6 sm:p-8 flex flex-col justify-between space-y-6">
+                    <div class="corner-ornament corner-tl"></div>
+                    <div class="corner-ornament corner-tr"></div>
+                    <div class="corner-ornament corner-bl"></div>
+                    <div class="corner-ornament corner-br"></div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between border-b border-indochina-gold/30 pb-3">
+                            <span class="font-mono text-xs uppercase tracking-widest text-indochina-goldBright"><i class="fa-solid fa-sliders mr-1"></i> DIRECCIÓN DE FOTOGRAFÍA & ARTE</span>
+                            <span class="px-2 py-0.5 rounded bg-indochina-emerald/40 border border-indochina-celadon text-[10px] font-mono">COLOR LAB</span>
+                        </div>
+
+                        <h4 class="font-display font-bold text-xl text-indochina-silk">
+                            Estética Indochina en el Delta del Paraná
+                        </h4>
+                        <p class="text-xs sm:text-sm text-indochina-parchment leading-relaxed">
+                            Para adaptar <em>«El cuello del dragón»</em> a la gran pantalla bajo el título comercial de <strong>«La resurrección del dragón»</strong>, el diseño de producción fusiona la humedad ribereña de Campana con la suntuosidad cromática del cine de <strong>Wong Kar-wai</strong> y <strong>Park Chan-wook</strong>:
+                        </p>
+
+                        <!-- Color Palette Swatches of the Film -->
+                        <div class="grid grid-cols-5 gap-2 pt-1">
+                            <div class="text-center">
+                                <div class="h-10 rounded-lg bg-[#0d2e26] border border-indochina-gold shadow-inner"></div>
+                                <span class="text-[9px] font-mono text-indochina-celadon mt-1 block">JADE PARANÁ</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="h-10 rounded-lg bg-[#8b1e24] border border-indochina-gold shadow-inner"></div>
+                                <span class="text-[9px] font-mono text-indochina-coral mt-1 block">LACA CARMESÍ</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="h-10 rounded-lg bg-[#d4af37] border border-white/40 shadow-inner"></div>
+                                <span class="text-[9px] font-mono text-indochina-goldBright mt-1 block">ORO IMPERIAL</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="h-10 rounded-lg bg-[#3d1547] border border-indochina-gold shadow-inner"></div>
+                                <span class="text-[9px] font-mono text-purple-300 mt-1 block">LOTO NOCTURNO</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="h-10 rounded-lg bg-[#d97724] border border-indochina-gold shadow-inner"></div>
+                                <span class="text-[9px] font-mono text-amber-300 mt-1 block">ÁMBAR ISLEÑO</span>
+                            </div>
+                        </div>
+
+                        <!-- Filmmaker Technical Table -->
+                        <div class="space-y-2 pt-2 text-xs font-mono">
+                            <div class="flex justify-between py-1.5 border-b border-indochina-gold/20">
+                                <span class="text-indochina-celadon">TÍTULO ORIGINAL (CRÓNICA):</span>
+                                <span class="text-indochina-silk font-bold">El cuello del dragón (.md)</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-indochina-gold/20">
+                                <span class="text-indochina-celadon">TÍTULO DE ESTRENO (DCP):</span>
+                                <span class="text-indochina-goldBright font-bold">La resurrección del dragón</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-indochina-gold/20">
+                                <span class="text-indochina-celadon">RELACIÓN DE ASPECTO:</span>
+                                <span class="text-indochina-silk">2.39:1 Panavision Scope</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-indochina-gold/20">
+                                <span class="text-indochina-celadon">REFERENCIA NARRATIVA:</span>
+                                <span class="text-indochina-coral">The Mentalist (Low-Budget Cut)</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-indochina-gold/20">
+                                <span class="text-indochina-celadon">CLIENTES DEL EMPRENDIMIENTO:</span>
+                                <span class="text-indochina-goldBright font-bold">0 (Cero Absoluto Certificado)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Direct Jump CTA to Download -->
+                    <div class="p-4 rounded-xl bg-gradient-to-r from-indochina-crimsonDark via-indochina-plumDark to-indochina-jadeDark border border-indochina-gold/60 flex items-center justify-between gap-3">
+                        <div>
+                            <div class="text-xs font-bold text-indochina-goldBright uppercase">Paquete de Prensa & Master 4K</div>
+                            <div class="text-[11px] text-indochina-parchment">Incluye película, guion íntegro y subtítulos.</div>
+                        </div>
+                        <a href="#descarga-directa" class="px-3.5 py-2 rounded-lg bg-indochina-gold text-indochina-abyss font-bold text-xs whitespace-nowrap hover:bg-indochina-goldBright transition">
+                            Ir al Link <i class="fa-solid fa-arrow-down ml-1"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <section class="ios-card">
-            <span class="ios-badge">Procesos Lógicos</span>
-            <h2 class="text-2xl sm:text-3xl mb-3">3. Diagrama de Flujo de Datos (DFD)</h2>
-            <p class="text-gray-500 mb-8 leading-relaxed">Representación del nivel 1 (Nivel Cero) del flujo de la información. Muestra cómo los datos se mueven entre las entidades externas (Cliente, Vehículo) y los almacenes de datos mediante procesos.</p>
-            <div class="mermaid">
-                flowchart TD
-                    %% Entidades Externas
-                    E_Cliente((Cliente))
-                    E_Vehiculo((Vehículo en<br>Tránsito))
-                    E_Reloj((Motor<br>Cron))
+        <!-- ======================================================================
+             SECTION 3: DRAMATIS PERSONAE (3D TILT CARDS OF THE 4 PROTAGONISTS)
+             ====================================================================== -->
+        <section class="space-y-8 perspective-stage">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-indochina-gold/40 pb-4">
+                <div>
+                    <span class="font-mono text-xs text-indochina-coral uppercase tracking-widest"><i class="fa-solid fa-masks-theater mr-1"></i> DRAMATIS PERSONAE • REPARTO PRINCIPAL</span>
+                    <h2 class="font-display font-bold text-2xl sm:text-4xl gold-foil-text uppercase mt-1">
+                        Los Cuatro Vértices del Incendio
+                    </h2>
+                </div>
+                <p class="text-xs font-mono text-indochina-celadon">
+                    <i class="fa-solid fa-hand-pointer mr-1 text-indochina-gold"></i> Deslizá o incliná las cartas en 3D para inspeccionar su psicología
+                </p>
+            </div>
 
-                    %% Procesos
-                    P1(1.0 Módulo de<br>Carga de Clientes)
-                    P2(2.0 Registro y<br>Conteo de Pases)
-                    P3(3.0 Cálculo de<br>Monto Mensual)
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                <!-- Character 1: Juan "Pocho" Hernández -->
+                <article onmousemove="tilt3DCard(event, this)" onmouseleave="reset3DCard(this)" class="maximal-frame card-3d rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden">
+                    <div class="corner-ornament corner-tl"></div>
+                    <div class="corner-ornament corner-tr"></div>
+                    <div class="space-y-4 card-3d-layer">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded bg-indochina-emerald/40 border border-indochina-celadon text-[10px] font-mono text-indochina-goldBright">EL PROTAGONISTA</span>
+                            <span class="text-2xl">🚤</span>
+                        </div>
+                        <div>
+                            <h3 class="font-display font-bold text-xl text-indochina-goldBright">Juan «Pocho» Hernández</h3>
+                            <p class="text-xs font-mono text-indochina-celadon">El Pibe de la Isla • Escuela Técnica</p>
+                        </div>
+                        <p class="text-xs sm:text-sm text-indochina-silk/90 leading-relaxed">
+                            Criado por padres estrictos arraigados a los Testigos de Jehová. Aprendió a callar, observar antes de hablar y aguantar de más hasta explotar. Cruza el Paraná cada día soñando con reinventarse, publica videos de superación personal y desata, con una pregunta tranquila, el desarme total de su perseguidor.
+                        </p>
+                    </div>
+                    <div class="mt-5 pt-3 border-t border-indochina-gold/30 text-[11px] font-mono space-y-1 card-3d-layer">
+                        <div class="flex justify-between"><span class="text-indochina-celadon">ARMA:</span><span class="text-indochina-goldBright">Mayéutica Socrática</span></div>
+                        <div class="flex justify-between"><span class="text-indochina-celadon">PUNTO CIEGO:</span><span class="text-indochina-coral">Indirectas en Redes</span></div>
+                    </div>
+                </article>
 
-                    %% Almacenes
-                    D1[("D1: Base Clientes<br>y Vehículos")]
-                    D2[("D2: Tarifario<br>por Estación")]
-                    D3[("D3: Registro<br>de Pases")]
-                    D4[("D4: Facturación")]
+                <!-- Character 2: Nico, el Dragón -->
+                <article onmousemove="tilt3DCard(event, this)" onmouseleave="reset3DCard(this)" class="maximal-frame card-3d rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden border-indochina-coral/70">
+                    <div class="corner-ornament corner-tl"></div>
+                    <div class="corner-ornament corner-tr"></div>
+                    <div class="space-y-4 card-3d-layer">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded bg-indochina-crimson border border-indochina-gold text-[10px] font-mono text-indochina-goldBright">EL ANTAGONISTA MITOLÓGICO</span>
+                            <span class="text-2xl">🐉</span>
+                        </div>
+                        <div>
+                            <h3 class="font-display font-bold text-xl text-indochina-coral">Nico, «El Dragón»</h3>
+                            <p class="text-xs font-mono text-indochina-gold">El Vigilante de las Esquinas</p>
+                        </div>
+                        <p class="text-xs sm:text-sm text-indochina-silk/90 leading-relaxed">
+                            Poseedor de un cuello tan descomunal que al asomarse por una pared primero aparece el cuello y varios segundos después el resto del individuo, como cargando con mala señal. Persigue a Juan como si resolviera un crimen nacional sin haber verificado jamás la fuente original del rumor.
+                        </p>
+                    </div>
+                    <div class="mt-5 pt-3 border-t border-indochina-gold/30 text-[11px] font-mono space-y-1 card-3d-layer">
+                        <div class="flex justify-between"><span class="text-indochina-celadon">LATENCIA FÍSICA:</span><span class="text-indochina-goldBright">+4.2s Cuello-Cuerpo</span></div>
+                        <div class="flex justify-between"><span class="text-indochina-celadon">PUNTO CIEGO:</span><span class="text-indochina-coral">Héroe de Historia Ajena</span></div>
+                    </div>
+                </article>
 
-                    %% Flujos
-                    E_Cliente -->|Datos personales y<br>vehículos| P1
-                    P1 -->|Altas/Modificaciones| D1
-                    
-                    E_Vehiculo -->|Lectura Patente/Tag<br>+ ID Estación| P2
-                    P2 <-->|Valida Vehículo<br>Obtiene Tipo| D1
-                    P2 <-->|Consulta Monto<br>según Estación y Tipo| D2
-                    P2 -->|Inserta Nuevo Pase| D3
+                <!-- Character 3: Laura -->
+                <article onmousemove="tilt3DCard(event, this)" onmouseleave="reset3DCard(this)" class="maximal-frame card-3d rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden">
+                    <div class="corner-ornament corner-tl"></div>
+                    <div class="corner-ornament corner-tr"></div>
+                    <div class="space-y-4 card-3d-layer">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded bg-indochina-plum border border-purple-400/50 text-[10px] font-mono text-purple-200">EL ORIGEN DEL ECO</span>
+                            <span class="text-2xl">🎸</span>
+                        </div>
+                        <div>
+                            <h3 class="font-display font-bold text-xl text-indochina-goldBright">Laura</h3>
+                            <p class="text-xs font-mono text-purple-300">La Conexión Musical • Emoción a Todo Volumen</p>
+                        </div>
+                        <p class="text-xs sm:text-sm text-indochina-silk/90 leading-relaxed">
+                            Unió su camino al de Juan a través de la música. Vivía las emociones con otro volumen: cada problema era una catástrofe y cada discusión, una sentencia definitiva. Tras la ruptura expresó su dolor («la relación me hizo sufrir»), sin imaginar que el pueblo transformaría su desahogo en un delito penal.
+                        </p>
+                    </div>
+                    <div class="mt-5 pt-3 border-t border-indochina-gold/30 text-[11px] font-mono space-y-1 card-3d-layer">
+                        <div class="flex justify-between"><span class="text-indochina-celadon">VOLUMEN EMOCIONAL:</span><span class="text-indochina-goldBright">110 dB (Catástrofe)</span></div>
+                        <div class="flex justify-between"><span class="text-indochina-celadon">FRASE MATRIZ:</span><span class="text-purple-300">«Me hizo sufrir»</span></div>
+                    </div>
+                </article>
 
-                    E_Reloj -->|Trigger: Fin de mes| P3
-                    D3 -->|Pases no facturados| P3
-                    D1 -->|Agrupación por Cliente| P3
-                    P3 -->|Genera Resumen| D4
-                    P3 -->|Notificación Total a Pagar| E_Cliente
+                <!-- Character 4: El Narrador / Socio -->
+                <article onmousemove="tilt3DCard(event, this)" onmouseleave="reset3DCard(this)" class="maximal-frame card-3d rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden">
+                    <div class="corner-ornament corner-tl"></div>
+                    <div class="corner-ornament corner-tr"></div>
+                    <div class="space-y-4 card-3d-layer">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded bg-indochina-goldDark/50 border border-indochina-gold text-[10px] font-mono text-indochina-goldBright">EL CRONISTA & SOCIO</span>
+                            <span class="text-2xl">💼</span>
+                        </div>
+                        <div>
+                            <h3 class="font-display font-bold text-xl text-indochina-goldBright">El Narrador</h3>
+                            <p class="text-xs font-mono text-indochina-amber">Cofundador del Imperio Sin Clientes</p>
+                        </div>
+                        <p class="text-xs sm:text-sm text-indochina-silk/90 leading-relaxed">
+                            Testigo presencial y confidente de Pocho. Juntos diseñan una corporación colosal en documentos de Word y PDFs con misión, visión, identidad visual espectacular y tres planes de expansión, mientras asisten perplejos a un caso digno de <em>El Mentalista</em> sin presupuesto.
+                        </p>
+                    </div>
+                    <div class="mt-5 pt-3 border-t border-indochina-gold/30 text-[11px] font-mono space-y-1 card-3d-layer">
+                        <div class="flex justify-between"><span class="text-indochina-celadon">PLANES DE NEGOCIO:</span><span class="text-indochina-goldBright">3 (Espectaculares)</span></div>
+                        <div class="flex justify-between"><span class="text-indochina-celadon">FACTURACIÓN REAL:</span><span class="text-indochina-coral">0 Clientes</span></div>
+                    </div>
+                </article>
             </div>
         </section>
 
-        <section class="ios-card">
-            <span class="ios-badge">Interacción de Usuario</span>
-            <h2 class="text-2xl sm:text-3xl mb-3">4. Diagrama de Casos de Uso</h2>
-            <p class="text-gray-500 mb-8 leading-relaxed">Identifica los actores principales del sistema y las funciones o servicios (casos de uso) que pueden ejecutar dentro de la plataforma.</p>
-            <div class="mermaid">
-                flowchart LR
-                    subgraph Actores
-                        A[\Administrador Peaje/]
-                        C[\Cliente Final/]
-                        S[\Sensor/Sistema/]
-                    end
+        <!-- ======================================================================
+             SECTION 4: MANUSCRITO ORIGINAL COMPLETO ("EL CUELLO DEL DRAGÓN" .MD)
+             ====================================================================== -->
+        <section id="manuscrito-completo" class="space-y-8">
+            <div class="maximal-frame rounded-3xl p-5 sm:p-10 lg:p-12 relative overflow-hidden">
+                <div class="corner-ornament corner-tl"></div>
+                <div class="corner-ornament corner-tr"></div>
+                <div class="corner-ornament corner-bl"></div>
+                <div class="corner-ornament corner-br"></div>
 
-                    subgraph Sistema de Gestión de Peajes
-                        UC1([Gestionar Clientes y Vehículos])
-                        UC2([Definir Tarifas por Estación y Tipo])
-                        UC3([Registrar Pase en Tiempo Real])
-                        UC4([Contabilizar Pases por Estación])
-                        UC5([Generar Facturación Mensual])
-                        UC6([Pagar Total del Mes])
-                    end
+                <!-- Manuscript Header & Controls -->
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b-2 border-indochina-gold/40">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="imperial-seal px-2.5 py-0.5 text-[10px] rounded">TEXTO ÍNTEGRO OFICIAL</span>
+                            <span class="font-mono text-xs text-indochina-celadon"><i class="fa-solid fa-file-code mr-1"></i> ARCHIVO ANCLADO: el_cuello_del_dragon.md</span>
+                        </div>
+                        <h2 class="font-display font-bold text-2xl sm:text-4xl gold-foil-text mt-2">
+                            El Cuello del Dragón (Crónica Original en la que se basa el Film)
+                        </h2>
+                    </div>
 
-                    A --> UC1
-                    A --> UC2
-                    A --> UC4
-                    
-                    C --> UC1
-                    C --> UC6
-                    
-                    S --> UC3
-                    S --> UC5
-                    
-                    UC3 -.->|include| UC4
+                    <!-- Reader Interactive Controls -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="toggleStoryNotes()" id="btn-story-notes" class="px-3.5 py-2 rounded-xl bg-indochina-crimson/80 border border-indochina-gold text-xs font-mono text-indochina-goldBright hover:bg-indochina-vermilion transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-video"></i> <span>Desglose de Cámara: VISIBLE</span>
+                        </button>
+                        <button onclick="changeStoryFontSize(1)" class="px-3 py-2 rounded-xl bg-indochina-jade border border-indochina-gold/40 text-xs font-mono text-indochina-silk hover:border-indochina-goldBright" title="Aumentar tamaño de letra">
+                            A+
+                        </button>
+                        <button onclick="changeStoryFontSize(-1)" class="px-3 py-2 rounded-xl bg-indochina-jade border border-indochina-gold/40 text-xs font-mono text-indochina-silk hover:border-indochina-goldBright" title="Reducir tamaño de letra">
+                            A-
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chapter Filter Tabs -->
+                <div class="flex overflow-x-auto gap-2 py-4 border-b border-indochina-gold/20 no-scrollbar">
+                    <button onclick="filterManuscriptChapter('all')" class="ms-tab-btn active px-4 py-2 rounded-xl bg-indochina-gold text-indochina-abyss font-mono text-xs font-bold whitespace-nowrap">
+                        <i class="fa-solid fa-book mr-1"></i> Lectura Completa (5 Actos)
+                    </button>
+                    <button onclick="filterManuscriptChapter('act1')" class="ms-tab-btn px-4 py-2 rounded-xl bg-indochina-jadeDark border border-indochina-gold/30 text-indochina-silk font-mono text-xs whitespace-nowrap hover:border-indochina-gold">
+                        I. Campana, Pocho y el Paraná
+                    </button>
+                    <button onclick="filterManuscriptChapter('act2')" class="ms-tab-btn px-4 py-2 rounded-xl bg-indochina-jadeDark border border-indochina-gold/30 text-indochina-silk font-mono text-xs whitespace-nowrap hover:border-indochina-gold">
+                        II. Laura y el Emprendimiento
+                    </button>
+                    <button onclick="filterManuscriptChapter('act3')" class="ms-tab-btn px-4 py-2 rounded-xl bg-indochina-jadeDark border border-indochina-gold/30 text-indochina-silk font-mono text-xs whitespace-nowrap hover:border-indochina-gold">
+                        III. ¡Nico, el Dragón!
+                    </button>
+                    <button onclick="filterManuscriptChapter('act4')" class="ms-tab-btn px-4 py-2 rounded-xl bg-indochina-jadeDark border border-indochina-gold/30 text-indochina-silk font-mono text-xs whitespace-nowrap hover:border-indochina-gold">
+                        IV. El Interrogatorio
+                    </button>
+                    <button onclick="filterManuscriptChapter('act5')" class="ms-tab-btn px-4 py-2 rounded-xl bg-indochina-jadeDark border border-indochina-gold/30 text-indochina-silk font-mono text-xs whitespace-nowrap hover:border-indochina-gold">
+                        V. El Giro y Epílogo
+                    </button>
+                </div>
+
+                <!-- THE VERBATIM STORY BODY WITH CINEMATIC STORYBOARDS -->
+                <div id="manuscript-reader-body" class="mt-8 space-y-10 font-serif text-lg sm:text-xl leading-relaxed text-indochina-silk/95 max-w-4xl mx-auto">
+
+                    <!-- ACTO I -->
+                    <div class="ms-chapter-block space-y-5" data-chapter="act1">
+                        <div class="flex items-center gap-3 text-indochina-gold font-mono text-xs uppercase tracking-widest">
+                            <span class="px-2 py-0.5 rounded bg-indochina-crimson/60 border border-indochina-gold/50">SECUENCIA 01</span>
+                            <span>EXT. CAMPANA / RÍO PARANÁ — AMANECER</span>
+                        </div>
+
+                        <p class="chapter-dropcap">
+                            En Campana los secretos duran menos que una historia de Instagram. Todos conocen a alguien que conoce a alguien, y cuando una noticia llega al último de la cadena, ya no se parece en nada a la original. Yo eso lo sabía. Lo que no sabía era que un día iba a terminar metido en el medio de una historia tan absurda que, contada en voz alta, parecía un caso del <strong class="text-indochina-goldBright">Mentalista</strong> escrito por alguien que se había quedado sin presupuesto.
+                        </p>
+
+                        <p>
+                            Juan Hernández, al que todos le decían <strong class="text-indochina-goldBright">Pocho</strong>, era un pibe de la isla que tenía una idea fija: crecer. No solamente ganar plata o hacerse conocido; quería convertirse en alguien distinto, construir una vida que no se pareciera a la que le había tocado. Sus viejos eran muy estrictos y estaban profundamente arraigados a los Testigos de Jehová. Juan aprendió a guardarse muchas cosas, a observar antes de hablar y a bancarse más de lo que debía. El problema era que, cuando se le llenaba el vaso, no avisaba: explotaba.
+                        </p>
+
+                        <p>
+                            Iba a la técnica, del otro lado del Paraná. Todos los días, cruzar el río era como recordarse que, para llegar adonde quería, siempre tenía que atravesar algo. Hasta que conoció a Laura por la música. Se pusieron de novios y al principio parecía una historia linda. Después se convirtió en una de esas relaciones en las que nadie sabe si está enamorado o simplemente está esperando la próxima discusión. Hubo infidelidades, reconciliaciones, reproches y peleas por cosas que, vistas desde afuera, parecían pequeñas; adentro, cada una era el fin del mundo.
+                        </p>
+
+                        <!-- Director Note Annotation 1 -->
+                        <div class="director-annotation p-4 rounded-xl bg-indochina-abyss/90 border-l-4 border-indochina-gold font-mono text-xs text-indochina-celadon space-y-1">
+                            <div class="text-indochina-goldBright font-bold"><i class="fa-solid fa-clapperboard mr-1"></i> NOTA DE DIRECCIÓN (PLANO SECUENCIA #01 — EL CRUCE):</div>
+                            <p>La cámara acompaña a Pocho en la proa de la lancha isleña. Colorimetría en verde jade profundo y dorado ocre. El sonido del motor diésel se funde con acordes de guitarra eléctrica distorsionada que anticipan la aparición de Laura.</p>
+                        </div>
+                    </div>
+
+                    <!-- ACTO II -->
+                    <div class="ms-chapter-block space-y-5" data-chapter="act2">
+                        <div class="flex items-center gap-3 text-indochina-gold font-mono text-xs uppercase tracking-widest">
+                            <span class="px-2 py-0.5 rounded bg-indochina-crimson/60 border border-indochina-gold/50">SECUENCIA 02</span>
+                            <span>INT. HABITACIÓN / OFICINA IMPROVISADA — NOCHE</span>
+                        </div>
+
+                        <p>
+                            Juan, para su edad, tenía una manera bastante extraña de mirar la vida. Pensaba en proyectos, en el futuro, en cómo salir adelante. Laura vivía las emociones con otro volumen: un problema podía convertirse en una catástrofe y una discusión, en una sentencia definitiva. Ninguno sabía cómo bajarle el volumen a la relación. Hasta que Juan se cansó y cortó.
+                        </p>
+
+                        <p class="text-indochina-goldBright font-semibold italic text-2xl py-2 border-y border-indochina-gold/25 text-center">
+                            Y ahí empezó la segunda historia: la que se contaba sin él.
+                        </p>
+
+                        <p>
+                            Laura habló mal de Juan por distintos lados. O, al menos, eso le llegaba a él. Cada versión venía un poco más cargada que la anterior. Juan intentó seguir con su vida y se aferró a mí. Nos pusimos a armar un emprendimiento gigantesco, de esos que tienen nombre, visión, misión, plan de expansión y cero clientes. En nuestros documentos, la empresa ya dominaba el mercado. En la realidad, todavía estábamos esperando que alguien nos preguntara cuánto salía el servicio.
+                        </p>
+
+                        <!-- Director Note Annotation 2 -->
+                        <div class="director-annotation p-4 rounded-xl bg-indochina-abyss/90 border-l-4 border-indochina-coral font-mono text-xs text-indochina-celadon space-y-1">
+                            <div class="text-indochina-coral font-bold"><i class="fa-solid fa-clapperboard mr-1"></i> NOTA DE DIRECCIÓN (MONTAJE PARALELO #02 — EL IMPERIO DE PAPEL):</div>
+                            <p>Split-screen maximalista: a la izquierda, organigramas imperiales y proyecciones financieras con 0 clientes; a la derecha, teléfonos vibrando en Campana con mensajes de audio que se multiplican como esporas rojas.</p>
+                        </div>
+                    </div>
+
+                    <!-- ACTO III -->
+                    <div class="ms-chapter-block space-y-5" data-chapter="act3">
+                        <div class="flex items-center gap-3 text-indochina-gold font-mono text-xs uppercase tracking-widest">
+                            <span class="px-2 py-0.5 rounded bg-indochina-crimson/60 border border-indochina-gold/50">SECUENCIA 03</span>
+                            <span>EXT. ESQUINAS DE CAMPANA / ESCUELA TÉCNICA — ATARDECER</span>
+                        </div>
+
+                        <p>
+                            Mientras nosotros soñábamos en grande, los rumores también crecían. Y entonces apareció <strong class="text-indochina-coral">Nico, el Dragón</strong>.
+                        </p>
+
+                        <p>
+                            El apodo no salió de la nada. Nico tenía un cuello tan largo que, cuando se asomaba desde una esquina para mirar si Juan estaba ahí, primero aparecía el cuello y varios segundos después el resto del individuo. Parecía que el cuerpo venía cargando con mala señal. Si lo veías asomarse detrás de una pared, entendías enseguida el apodo. Como diría cualquiera con un mínimo de sentido del espectáculo: <em class="text-indochina-goldBright">¡Nico, el Dragón!</em>
+                        </p>
+
+                        <p>
+                            Al principio eran cruces sueltos. Después, encuentros demasiado oportunos. En la escuela, al salir, por la calle, en redes. Juan empezó a publicar contenido de motivación y algunos videos tuvieron bastante repercusión. Quería hablar de disciplina, crecimiento y de levantarse después de una mala etapa. Pero en una ciudad donde todos se conocen, hasta una frase sobre superar el pasado puede ser interpretada como una indirecta, una confesión o una declaración de guerra.
+                        </p>
+
+                        <p>
+                            Nico parecía convencido de que Juan era el villano de una historia que él conocía de memoria. El detalle era que nunca había escuchado la historia completa. Y, aun así, lo perseguía como si le hubieran encargado resolver un crimen nacional.
+                        </p>
+
+                        <!-- Director Note Annotation 3 -->
+                        <div class="director-annotation p-4 rounded-xl bg-indochina-abyss/90 border-l-4 border-indochina-amber font-mono text-xs text-indochina-celadon space-y-1">
+                            <div class="text-indochina-amber font-bold"><i class="fa-solid fa-clapperboard mr-1"></i> NOTA DE DIRECCIÓN (EFECTO VISUAL #03 — LATENCIA DEL DRAGÓN):</div>
+                            <p>Lente gran angular 18mm pegado al muro de ladrillos. El cuello de Nico ingresa en cuadro a 24fps mientras el fondo sufre un efecto de step-printing a 6fps al estilo Wong Kar-wai, enfatizando el desfase temporal entre cabeza y torso.</p>
+                        </div>
+                    </div>
+
+                    <!-- ACTO IV -->
+                    <div class="ms-chapter-block space-y-5" data-chapter="act4">
+                        <div class="flex items-center gap-3 text-indochina-gold font-mono text-xs uppercase tracking-widest">
+                            <span class="px-2 py-0.5 rounded bg-indochina-crimson/60 border border-indochina-gold/50">SECUENCIA 04 — CLÍMAX</span>
+                            <span>EXT. CALLEJÓN DE CAMPANA — HORA AZUL</span>
+                        </div>
+
+                        <p>
+                            Hasta que llegó el último encuentro.
+                        </p>
+
+                        <p>
+                            Fue uno de esos momentos en los que el aire se pone raro antes de que pase algo. Nico lo interceptó decidido a terminar todo de una vez. Juan se quedó helado. No entendía qué estaba pasando ni por qué aquello seguía escalando después de tanto tiempo.
+                        </p>
+
+                        <div class="pl-4 sm:pl-6 border-l-2 border-indochina-gold/60 space-y-3 italic text-indochina-parchment">
+                            <p>—¿Qué pasa, Nico? ¿Qué hice ahora?</p>
+                            <p class="not-italic text-indochina-silk/80 text-base">El Dragón se acomodó, infló el pecho y largó todo junto:</p>
+                            <p class="text-indochina-coral font-bold not-italic text-xl">—¡Vos le pegabas a Laura! ¡La hacías sentir mal! ¡La gorreaste! ¡La destruiste!</p>
+                        </div>
+
+                        <p>
+                            Juan lo miró, asustado, pero también desconcertado. Algunas acusaciones venían de una relación que había sido complicada; otra era algo mucho más grave. Y lo más inquietante era que Nico no estaba preguntando nada. Ya había dictado sentencia.
+                        </p>
+
+                        <p>
+                            Entonces Juan hizo algo que no esperaba nadie: en lugar de discutir, empezó a preguntar.
+                        </p>
+
+                        <div class="pl-4 sm:pl-6 border-l-2 border-indochina-celadon/60 space-y-3">
+                            <p>—¿Vos me viste pegarle?</p>
+                            <p>—No, pero me contaron.</p>
+                            <p>—¿Quién te lo contó?</p>
+                        </div>
+
+                        <p>
+                            Nico nombró a un conocido. Juan preguntó quién se lo había dicho a ese conocido. Apareció otro nombre. Después, otro. Cada respuesta lo alejaba un poco más de Laura y lo acercaba a una frase que nadie podía ubicar en una conversación concreta.
+                        </p>
+
+                        <p>
+                            Juan siguió, tranquilo:
+                        </p>
+
+                        <div class="pl-4 sm:pl-6 border-l-2 border-indochina-goldBright space-y-3">
+                            <p>—¿Vos escuchaste a Laura decir que yo le pegué?</p>
+                            <p class="text-base text-indochina-parchment">Nico no contestó enseguida. Miró hacia un costado, como si estuviera buscando a alguien que le soplara la respuesta.</p>
+                            <p>—No exactamente. Ella dijo que la relación la había hecho sufrir. Que vos la habías lastimado. Después me llegó lo otro.</p>
+                        </div>
+
+                        <p>
+                            Ahí estaba. La pieza que faltaba no era una prueba: era una palabra que se había agregado en el camino. <em class="text-indochina-goldBright">Me hizo mal</em> se había convertido en <em class="text-indochina-amber">me maltrataba</em>. Y, de alguna manera, <em class="text-indochina-amber">me maltrataba</em> había terminado en <em class="text-indochina-coral">le pegaba</em>. Nadie podía señalar el momento exacto en que ocurrió la transformación, porque cada uno había recibido la historia ya deformada y la había repetido como si la hubiera visto con sus propios ojos.
+                        </p>
+
+                        <p>
+                            El caso empezaba a cerrarse, pero todavía quedaba una pregunta.
+                        </p>
+
+                        <p>
+                            —¿Y mis videos? —dijo Juan—. ¿También te dijeron qué significaban o los interpretaste vos?
+                        </p>
+
+                        <p>
+                            Nico sacó el celular y le mostró uno. Juan lo reconoció enseguida. Era un video suyo sobre las personas que se victimizan después de una ruptura. Lo había publicado en un momento de bronca, convencido de que estaba hablando en general. Pero, si uno conocía la historia con Laura, era fácil pensar que tenía destinataria.
+                        </p>
+
+                        <p>
+                            Juan bajó la mirada. Por primera vez, entendió que tampoco había sido tan invisible como creía. Él no había inventado las acusaciones, pero algunas indirectas suyas habían alimentado el incendio. Quería crecer y demostrar que estaba bien; en el camino, había dejado frases que otros podían usar para confirmar lo que ya querían creer.
+                        </p>
+
+                        <p class="p-4 rounded-xl bg-indochina-jadeDark/90 border border-indochina-gold/50 text-indochina-goldBright font-semibold">
+                            —Yo me hago cargo de mis indirectas —dijo—. Pero no me voy a hacer cargo de algo tan grave que nadie puede demostrar y que, encima, vos ni siquiera escuchaste de la persona que supuestamente lo dijo.
+                        </p>
+                    </div>
+
+                    <!-- ACTO V -->
+                    <div class="ms-chapter-block space-y-5" data-chapter="act5">
+                        <div class="flex items-center gap-3 text-indochina-gold font-mono text-xs uppercase tracking-widest">
+                            <span class="px-2 py-0.5 rounded bg-indochina-crimson/60 border border-indochina-gold/50">SECUENCIA 05 — EPÍLOGO</span>
+                            <span>EXT. COSTANERA DE CAMPANA — SILENCIO ABSOLUTO</span>
+                        </div>
+
+                        <p>
+                            Nico no tenía una respuesta. Había llegado preparado para una pelea y se encontraba frente a una pregunta mucho más incómoda: <strong class="text-indochina-goldBright">¿y si había pasado meses persiguiendo a alguien por una historia que nunca se tomó el trabajo de comprobar?</strong>
+                        </p>
+
+                        <p class="text-2xl font-display text-indochina-coral text-center py-3">
+                            El Dragón bajó la cabeza. El cuello, como siempre, tardó un poco más.
+                        </p>
+
+                        <p>
+                            No hubo golpes, ni confesiones espectaculares, ni música de suspenso. El caso se resolvió con un silencio larguísimo y un tipo descubriendo que defender a alguien no es lo mismo que defender cualquier cosa que le cuenten sobre esa persona.
+                        </p>
+
+                        <p>
+                            Después de aquello, Nico dejó de aparecer en cada esquina. Juan siguió creando contenido, aunque aprendió a pensar dos veces antes de publicar una frase escrita con bronca. Y nosotros seguimos con nuestro emprendimiento, que para ese momento ya tenía una identidad visual espectacular, tres planes de negocio y la misma cantidad de clientes que al principio: cero.
+                        </p>
+
+                        <p>
+                            Con el tiempo entendí cuál había sido el verdadero giro de toda la historia. No era que Laura fuera una villana secreta, ni que Nico fuera un monstruo, ni que Juan fuera el santo de la película. Era algo bastante más peligroso y bastante más común: <strong class="text-indochina-goldBright">cada uno había confundido su versión con la verdad</strong>. Unos por dolor, otros por orgullo y otros por las ganas de convertirse en héroes de una historia ajena.
+                        </p>
+
+                        <p class="p-6 rounded-2xl bg-gradient-to-r from-indochina-crimsonDark/90 via-indochina-abyss to-indochina-jadeDark/90 border-2 border-indochina-gold text-center font-serif italic text-xl sm:text-2xl text-indochina-goldBright shadow-2xl">
+                            «En Campana, desde entonces, cuando alguien decía que había visto a Nico el Dragón asomarse detrás de una pared, ya no preguntábamos a quién estaba buscando.<br>
+                            <span class="font-display not-italic font-black text-white uppercase tracking-wider mt-2 block">Preguntábamos quién se lo había contado.»</span>
+                        </p>
+                    </div>
+
+                </div>
             </div>
         </section>
 
-        <section class="ios-card">
-            <span class="ios-badge">POO / Backend</span>
-            <h2 class="text-2xl sm:text-3xl mb-3">5. Diagrama de Clases</h2>
-            <p class="text-gray-500 mb-8 leading-relaxed">Arquitectura de software orientada a objetos. Detalla los atributos, métodos y multiplicidad de las clases que implementan la lógica de negocio.</p>
-            <div class="mermaid">
-                classDiagram
-                    class Cliente {
-                        -int idCliente
-                        -String razonSocial
-                        -String cuit
-                        +registrarVehiculo(Vehiculo v)
-                        +obtenerPasesMensuales() List~Pase~
-                        +calcularDeudaTotal() float
-                    }
-                    class Vehiculo {
-                        -String patente
-                        -String tipoVehiculo
-                        -String tagRFID
-                        +vincularTag(String tag)
-                    }
-                    class EstacionPeaje {
-                        -int idEstacion
-                        -String ubicacion
-                        +leerTag(String tagRFID)
-                        +obtenerMonto(String tipoVehiculo) float
-                        +conteoPasesMensual() int
-                    }
-                    class Tarifa {
-                        -String tipoVehiculo
-                        -float montoPase
-                        +actualizarMonto(float nuevoMonto)
-                    }
-                    class Pase {
-                        -int idPase
-                        -DateTime fechaHora
-                        -float montoCobrado
-                        +registrar() bool
-                    }
-                    class FacturaMensual {
-                        -int idFactura
-                        -int mes
-                        -int anio
-                        -float montoFinalAPagar
-                        +generarResumen()
-                        +marcarPagada()
-                    }
+        <!-- ======================================================================
+             SECTION 5: LABORATORIO INTERACTIVO DEL RUMOR & INTERROGATORIO SOCRÁTICO
+             ====================================================================== -->
+        <section id="laboratorio-rumor" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left 7 Cols: Interactive Rumor Distortion Chain ("Teléfono Descompuesto en Campana") -->
+            <div class="lg:col-span-7 maximal-frame rounded-3xl p-6 sm:p-8 space-y-6">
+                <div class="corner-ornament corner-tl"></div>
+                <div class="corner-ornament corner-tr"></div>
+                <div class="corner-ornament corner-bl"></div>
+                <div class="corner-ornament corner-br"></div>
 
-                    Cliente "1" *-- "1..*" Vehiculo : posee
-                    EstacionPeaje "1" *-- "1..*" Tarifa : administra
-                    Vehiculo "1" -- "0..*" Pase : genera
-                    EstacionPeaje "1" -- "0..*" Pase : registra
-                    Cliente "1" -- "0..*" FacturaMensual : debe
-                    FacturaMensual "1" o-- "1..*" Pase : agrupa
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-indochina-gold/30 pb-3">
+                    <div>
+                        <span class="font-mono text-xs text-indochina-amber uppercase tracking-widest"><i class="fa-solid fa-microscope mr-1"></i> FORENSE NARRATIVO • CASO «EL MENTALISTA»</span>
+                        <h3 class="font-display font-bold text-xl sm:text-2xl gold-foil-text mt-1">
+                            Cadena de Mutación del Rumor en Campana
+                        </h3>
+                    </div>
+                    <span id="distortion-meter-badge" class="px-3 py-1 rounded-full bg-indochina-crimson border border-indochina-gold text-xs font-mono font-bold text-indochina-goldBright">
+                        DEFORMACIÓN: 0%
+                    </span>
+                </div>
+
+                <p class="text-xs sm:text-sm text-indochina-parchment">
+                    Tocá cada eslabón de la cadena en Campana para analizar cómo una frase nacida del dolor emocional se deformó hasta convertirse en una acusación penal sin testigos:
+                </p>
+
+                <!-- Node Chain Buttons -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                    <button onclick="inspectRumorNode(0)" id="rumor-node-0" class="rumor-node-btn p-3 rounded-xl bg-indochina-crimson/90 border-2 border-indochina-goldBright text-left transition">
+                        <div class="text-[10px] font-mono text-indochina-goldBright">ESLABÓN #01</div>
+                        <div class="text-xs font-bold text-white mt-0.5">Laura (Origen)</div>
+                        <div class="text-[10px] text-emerald-300 font-mono mt-1">Distorsión: 0%</div>
+                    </button>
+                    <button onclick="inspectRumorNode(1)" id="rumor-node-1" class="rumor-node-btn p-3 rounded-xl bg-indochina-jadeDark/80 border border-indochina-gold/30 text-left transition">
+                        <div class="text-[10px] font-mono text-indochina-celadon">ESLABÓN #02</div>
+                        <div class="text-xs font-bold text-white mt-0.5">Amiga del Coro</div>
+                        <div class="text-[10px] text-amber-300 font-mono mt-1">Distorsión: 32%</div>
+                    </button>
+                    <button onclick="inspectRumorNode(2)" id="rumor-node-2" class="rumor-node-btn p-3 rounded-xl bg-indochina-jadeDark/80 border border-indochina-gold/30 text-left transition">
+                        <div class="text-[10px] font-mono text-indochina-celadon">ESLABÓN #03</div>
+                        <div class="text-xs font-bold text-white mt-0.5">Pibe de la Técnica</div>
+                        <div class="text-[10px] text-orange-400 font-mono mt-1">Distorsión: 68%</div>
+                    </button>
+                    <button onclick="inspectRumorNode(3)" id="rumor-node-3" class="rumor-node-btn p-3 rounded-xl bg-indochina-jadeDark/80 border border-indochina-gold/30 text-left transition">
+                        <div class="text-[10px] font-mono text-indochina-celadon">ESLABÓN #04</div>
+                        <div class="text-xs font-bold text-white mt-0.5">Reels de Pocho</div>
+                        <div class="text-[10px] text-red-400 font-mono mt-1">Distorsión: 85%</div>
+                    </button>
+                    <button onclick="inspectRumorNode(4)" id="rumor-node-4" class="rumor-node-btn col-span-2 sm:col-span-1 p-3 rounded-xl bg-indochina-jadeDark/80 border border-indochina-gold/30 text-left transition">
+                        <div class="text-[10px] font-mono text-indochina-celadon">ESLABÓN #05</div>
+                        <div class="text-xs font-bold text-white mt-0.5">Nico el Dragón</div>
+                        <div class="text-[10px] text-rose-500 font-mono mt-1">Distorsión: 100%</div>
+                    </button>
+                </div>
+
+                <!-- Detailed Node Inspection Display -->
+                <div class="p-5 rounded-2xl bg-black/70 border border-indochina-gold/50 space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <span id="rumor-stage-title" class="font-display font-bold text-lg text-indochina-goldBright">
+                            Eslabón #01: El Desahogo Original de Laura
+                        </span>
+                        <span id="rumor-linguistic-mutation" class="px-2.5 py-1 rounded bg-indochina-crimson/60 border border-indochina-coral text-xs font-mono text-indochina-silk">
+                            FRASE: «La relación me hizo sufrir / Me hizo mal»
+                        </span>
+                    </div>
+
+                    <blockquote id="rumor-quote-box" class="p-4 rounded-xl bg-indochina-jadeDark/60 border-l-4 border-indochina-gold font-serif italic text-lg text-indochina-silk">
+                        «Cortamos con Juan. La verdad es que la relación me hizo sufrir un montón, me lastimó emocionalmente y terminamos re mal.»
+                    </blockquote>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div class="p-3 rounded-lg bg-indochina-abyss border border-indochina-gold/25">
+                            <span class="font-mono text-indochina-celadon block mb-1">ANÁLISIS PSICOLÓGICO:</span>
+                            <p id="rumor-psych-analysis" class="text-indochina-parchment">
+                                Laura expresa un dolor subjetivo real tras una relación caótica, pero no formula ninguna acusación de violencia física.
+                            </p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-indochina-abyss border border-indochina-gold/25">
+                            <span class="font-mono text-indochina-coral block mb-1">PRUEBA FÍSICA VERIFICABLE:</span>
+                            <p id="rumor-evidence-status" class="text-indochina-goldBright font-mono">
+                                Testimonio directo de ruptura sentimental. Cero imputación de golpes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right 5 Cols: Interactive Socratic Interrogation Simulator -->
+            <div class="lg:col-span-5 maximal-frame rounded-3xl p-6 sm:p-8 space-y-5">
+                <div class="corner-ornament corner-tl"></div>
+                <div class="corner-ornament corner-tr"></div>
+                <div class="corner-ornament corner-bl"></div>
+                <div class="corner-ornament corner-br"></div>
+
+                <div class="border-b border-indochina-gold/30 pb-3">
+                    <span class="font-mono text-xs text-indochina-coral uppercase tracking-widest"><i class="fa-solid fa-bolt mr-1"></i> SIMULADOR DE ESCENA CLÍMAX</span>
+                    <h3 class="font-display font-bold text-xl sm:text-2xl gold-foil-text mt-1">
+                        Duelo Socrático: Pocho vs. El Dragón
+                    </h3>
+                </div>
+
+                <!-- Confidence / Conviction Bar of Nico -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between text-xs font-mono">
+                        <span class="text-indochina-celadon">CERTEZA DE NICO EL DRAGÓN:</span>
+                        <span id="nico-conviction-value" class="text-indochina-coral font-bold">100% (SENTENCIA DICTADA)</span>
+                    </div>
+                    <div class="w-full h-3 rounded-full bg-black/80 border border-indochina-gold/40 overflow-hidden">
+                        <div id="nico-conviction-bar" class="h-full bg-gradient-to-r from-indochina-gold via-indochina-amber to-indochina-vermilion transition-all duration-500" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <!-- Dialogue Screen -->
+                <div id="interrogation-screen" class="p-4 rounded-2xl bg-black/80 border border-indochina-gold/40 min-h-[210px] flex flex-col justify-between space-y-4">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2 text-xs font-mono text-indochina-coral">
+                            <span class="text-base">🐉</span>
+                            <span id="interrogation-speaker">NICO, EL DRAGÓN (Inflando el pecho):</span>
+                        </div>
+                        <p id="interrogation-dialogue" class="font-serif italic text-base sm:text-lg text-indochina-silk">
+                            «¡Vos le pegabas a Laura! ¡La hacías sentir mal! ¡La gorreaste! ¡La destruiste!»
+                        </p>
+                    </div>
+
+                    <div id="interrogation-feedback" class="p-2.5 rounded-lg bg-indochina-jadeDark/80 border border-indochina-gold/30 text-[11px] font-mono text-indochina-goldBright">
+                        TURNO DE JUAN (POCHO): Elegí la pregunta exacta de la historia para desarmar la acusación sin pelear.
+                    </div>
+                </div>
+
+                <!-- Interactive Question Choices -->
+                <div id="interrogation-options" class="space-y-2">
+                    <button onclick="playInterrogationStep(1)" class="w-full p-3 rounded-xl bg-indochina-jade hover:bg-indochina-emerald border border-indochina-gold/50 text-left text-xs sm:text-sm font-medium text-indochina-silk transition flex items-center justify-between">
+                        <span>1. «¿Vos me viste pegarle?»</span>
+                        <i class="fa-solid fa-chevron-right text-indochina-gold"></i>
+                    </button>
+                    <button onclick="playInterrogationStep(2)" class="w-full p-3 rounded-xl bg-indochina-jade hover:bg-indochina-emerald border border-indochina-gold/50 text-left text-xs sm:text-sm font-medium text-indochina-silk transition flex items-center justify-between">
+                        <span>2. «¿Quién te lo contó? ¿Y quién se lo dijo a ese conocido?»</span>
+                        <i class="fa-solid fa-chevron-right text-indochina-gold"></i>
+                    </button>
+                    <button onclick="playInterrogationStep(3)" class="w-full p-3 rounded-xl bg-indochina-jade hover:bg-indochina-emerald border border-indochina-gold/50 text-left text-xs sm:text-sm font-medium text-indochina-silk transition flex items-center justify-between">
+                        <span>3. «¿Vos escuchaste a Laura decir que yo le pegué?»</span>
+                        <i class="fa-solid fa-chevron-right text-indochina-gold"></i>
+                    </button>
+                    <button onclick="playInterrogationStep(4)" class="w-full p-3 rounded-xl bg-indochina-crimson/80 hover:bg-indochina-vermilion border border-indochina-goldBright text-left text-xs sm:text-sm font-bold text-indochina-goldBright transition flex items-center justify-between">
+                        <span>4. «Me hago cargo de mis indirectas, pero no de algo que nadie puede demostrar.»</span>
+                        <i class="fa-solid fa-gavel"></i>
+                    </button>
+                </div>
             </div>
         </section>
 
-        <section class="ios-card">
-            <span class="ios-badge">Máquina de Estados</span>
-            <h2 class="text-2xl sm:text-3xl mb-3">6. Diagrama de Transición de Estados (DTE)</h2>
-            <p class="text-gray-500 mb-8 leading-relaxed">Muestra el ciclo de vida de la entidad <strong>Factura Mensual</strong>, controlando cómo avanza desde la agrupación de pases hasta la liquidación del cliente.</p>
-            <div class="mermaid">
-                stateDiagram-v2
-                    [*] --> Acumulando_Pases : Inicia 1er día del mes
+        <!-- ======================================================================
+             SECTION 6: SIMULADOR FÍSICO DE «EL CUELLO CON MALA SEÑAL» & EL EMPRENDIMIENTO DE CERO CLIENTES
+             ====================================================================== -->
+        <section id="simulador-cuello" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left 6 Cols: "El Cuello con Mala Señal" Corner-Peek Simulator -->
+            <div class="lg:col-span-6 maximal-frame rounded-3xl p-6 sm:p-8 space-y-5">
+                <div class="corner-ornament corner-tl"></div>
+                <div class="corner-ornament corner-tr"></div>
+                <div class="corner-ornament corner-bl"></div>
+                <div class="corner-ornament corner-br"></div>
+
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-indochina-gold/30 pb-3">
+                    <div>
+                        <span class="font-mono text-xs text-indochina-coral uppercase tracking-widest"><i class="fa-solid fa-tower-cell mr-1"></i> LABORATORIO BIOMECÁNICO DE CAMPANA</span>
+                        <h3 class="font-display font-bold text-xl sm:text-2xl gold-foil-text mt-1">
+                            Simulador: «El Cuello con Mala Señal»
+                        </h3>
+                    </div>
+                    <span id="neck-ping-badge" class="px-2.5 py-1 rounded bg-indochina-crimson border border-indochina-gold text-xs font-mono text-indochina-goldBright">
+                        PING: 3,800 ms
+                    </span>
+                </div>
+
+                <p class="text-xs sm:text-sm text-indochina-parchment">
+                    <em>«Primero aparecía el cuello y varios segundos después el resto del individuo. Parecía que el cuerpo venía cargando con mala señal.»</em> Probá asomar a Nico detrás de la pared según la señal de Campana:
+                </p>
+
+                <!-- Interactive Canvas for Corner-Peek Physics -->
+                <div class="relative w-full h-56 sm:h-64 rounded-2xl overflow-hidden bg-[#05120f] border-2 border-indochina-gold/50 shadow-inner">
+                    <canvas id="neck-simulator-canvas" class="w-full h-full block"></canvas>
+                    <div class="absolute top-3 right-3 px-2.5 py-1 rounded bg-black/80 border border-indochina-gold/40 text-[10px] font-mono text-indochina-goldBright">
+                        ESTADO: <span id="neck-load-state">ESPERANDO EN LA ESQUINA</span>
+                    </div>
+                </div>
+
+                <!-- Controls for Latency & Trigger -->
+                <div class="space-y-3 pt-1">
+                    <div class="flex justify-between text-xs font-mono">
+                        <span class="text-indochina-celadon">RETRASO DEL CUERPO (MALA SEÑAL):</span>
+                        <span id="neck-delay-label" class="text-indochina-goldBright font-bold">3.5 Segundos (EDGE / 2G Isla)</span>
+                    </div>
+                    <input id="neck-latency-slider" type="range" min="0.5" max="6.0" step="0.5" value="3.5" oninput="updateNeckLatency(this.value)" class="maximal-slider" aria-label="Control de latencia del cuello">
+
+                    <div class="flex flex-wrap gap-2 pt-2">
+                        <button onclick="triggerDragonPeek()" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-indochina-crimson via-indochina-vermilion to-indochina-amber border border-indochina-goldBright font-display font-bold text-xs sm:text-sm text-white shadow-lg hover:scale-[1.02] transition">
+                            <i class="fa-solid fa-eye mr-1.5"></i> ¡ASOMAR A NICO POR LA ESQUINA!
+                        </button>
+                        <button onclick="triggerDragonBow()" class="py-3 px-4 rounded-xl bg-indochina-jade border border-indochina-gold/50 font-mono text-xs text-indochina-goldBright hover:bg-indochina-emerald transition">
+                            Bajar la Cabeza (Final)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right 6 Cols: "El Emprendimiento de Cero Clientes" Corporate Artifact -->
+            <div class="lg:col-span-6 maximal-frame rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-5">
+                <div class="corner-ornament corner-tl"></div>
+                <div class="corner-ornament corner-tr"></div>
+                <div class="corner-ornament corner-bl"></div>
+                <div class="corner-ornament corner-br"></div>
+
+                <div class="space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-indochina-gold/30 pb-3">
+                        <div>
+                            <span class="font-mono text-xs text-indochina-celadon uppercase tracking-widest"><i class="fa-solid fa-briefcase mr-1"></i> PROP ORIGINAL DE LA PELÍCULA</span>
+                            <h3 class="font-display font-bold text-xl sm:text-2xl gold-foil-text mt-1">
+                                El Emprendimiento de Cero Clientes
+                            </h3>
+                        </div>
+                        <span class="imperial-seal px-2.5 py-1 text-[10px] rounded">SERIE A · $0 USD</span>
+                    </div>
+
+                    <p class="text-xs sm:text-sm text-indochina-parchment">
+                        <em>«En nuestros documentos, la empresa ya dominaba el mercado. En la realidad, todavía estábamos esperando que alguien nos preguntara cuánto salía el servicio.»</em> Explorá los 3 planes de negocio de Pocho y el Narrador:
+                    </p>
+
+                    <!-- Live Dashboard Metrics -->
+                    <div class="grid grid-cols-3 gap-2.5 text-center">
+                        <div class="p-3 rounded-xl bg-black/75 border border-indochina-gold/40">
+                            <div class="text-[10px] font-mono text-indochina-celadon">IDENTIDAD VISUAL</div>
+                            <div class="font-display font-black text-lg sm:text-xl text-indochina-goldBright mt-1">100/100</div>
+                            <div class="text-[10px] text-emerald-400 font-mono">Espectacular</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-black/75 border border-indochina-gold/40">
+                            <div class="text-[10px] font-mono text-indochina-celadon">PLANES DE NEGOCIO</div>
+                            <div class="font-display font-black text-lg sm:text-xl text-indochina-amber mt-1">03</div>
+                            <div class="text-[10px] text-indochina-silk font-mono">Expansión Global</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-indochina-crimsonDark/90 border-2 border-indochina-coral">
+                            <div class="text-[10px] font-mono text-indochina-goldBright">CLIENTES REALES</div>
+                            <div id="zero-clients-counter" class="font-display font-black text-2xl sm:text-3xl text-white mt-0.5">0</div>
+                            <div class="text-[10px] text-indochina-coral font-mono">Inalterable</div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Business Plan Switcher -->
+                    <div class="p-4 rounded-2xl bg-black/70 border border-indochina-gold/30 space-y-2">
+                        <div class="flex gap-2">
+                            <button onclick="switchStartupPlan(0)" class="px-2.5 py-1 rounded bg-indochina-gold text-indochina-abyss font-mono text-[10px] font-bold">PLAN DE NEGOCIO #1</button>
+                            <button onclick="switchStartupPlan(1)" class="px-2.5 py-1 rounded bg-indochina-jade border border-indochina-gold/40 text-indochina-silk font-mono text-[10px]">PLAN #2</button>
+                            <button onclick="switchStartupPlan(2)" class="px-2.5 py-1 rounded bg-indochina-jade border border-indochina-gold/40 text-indochina-silk font-mono text-[10px]">PLAN #3</button>
+                        </div>
+                        <h4 id="startup-plan-title" class="font-serif font-bold text-lg text-indochina-goldBright pt-1">
+                            Fase 1: Dominación Total del Corredor Campana-Zárate-Shanghái
+                        </h4>
+                        <p id="startup-plan-desc" class="text-xs text-indochina-silk/90 leading-relaxed">
+                            Misión corporativa: sinergia disruptiva de consultoría integral multi-rubro con logos minimalistas en dorado imperial. Estado actual: esperando que aunque sea un tío pregunte cuánto sale el presupuesto.
+                        </p>
+                    </div>
+                </div>
+
+                <button onclick="attemptToGetClient()" class="w-full py-3 px-4 rounded-xl bg-indochina-jade hover:bg-indochina-emerald border border-indochina-gold font-mono text-xs font-bold text-indochina-goldBright transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-user-plus"></i> <span id="client-btn-text">Intentar Conseguir el Primer Cliente en Campana</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             SECTION 7: CENTRO DE DESCARGA DIRECTA & ENLACES DE LA PELÍCULA
+             ====================================================================== -->
+        <section id="descarga-directa" class="space-y-8">
+            <div class="maximal-frame rounded-3xl p-6 sm:p-10 lg:p-12 relative overflow-hidden border-2 border-indochina-goldBright">
+                <div class="corner-ornament corner-tl"></div>
+                <div class="corner-ornament corner-tr"></div>
+                <div class="corner-ornament corner-bl"></div>
+                <div class="corner-ornament corner-br"></div>
+
+                <!-- Header -->
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-indochina-gold/40">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="imperial-seal px-3 py-0.5 text-xs rounded">LINK DE DESCARGA OFICIAL VERIFICADO</span>
+                            <span class="px-2.5 py-0.5 rounded bg-emerald-900/70 border border-emerald-400 text-[11px] font-mono text-emerald-300">
+                                <i class="fa-solid fa-shield-halved mr-1"></i> SHA-256 VERIFICADO · SIN PUBLICIDAD
+                            </span>
+                        </div>
+                        <h2 class="font-display font-black text-2xl sm:text-4xl lg:text-5xl gold-foil-text uppercase mt-2">
+                            Descargar «La Resurrección del Dragón»
+                        </h2>
+                        <p class="font-serif text-base sm:text-xl text-indochina-parchment mt-1">
+                            Seleccioná el servidor de descarga directa, edición DCP de cineasta o paquete espacial optimizado para iOS 27.
+                        </p>
+                    </div>
+
+                    <!-- Total Downloads Counter -->
+                    <div class="p-4 rounded-2xl bg-black/80 border border-indochina-gold/60 text-right font-mono">
+                        <div class="text-[10px] text-indochina-celadon">DESCARGAS EN CAMPANA & GLOBAL</div>
+                        <div id="download-counter-live" class="text-2xl sm:text-3xl font-bold text-indochina-goldBright">84,219</div>
+                        <div class="text-[10px] text-emerald-400"><i class="fa-solid fa-bolt mr-1"></i> Velocidad Máxima: 1.2 GB/s</div>
+                    </div>
+                </div>
+
+                <!-- 4 Download Editions Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 my-8">
                     
-                    Acumulando_Pases --> Cerrada : Llega fin de mes
-                    Cerrada --> Calculando_Total : Trigger automático
-                    
-                    Calculando_Total --> Emitida : Cálculo exitoso
-                    Calculando_Total --> Error_Calculo : Falla en BD
-                    Error_Calculo --> Calculando_Total : Reintento
-                    
-                    Emitida --> Notificada_Al_Cliente : Envío Email/App
-                    
-                    Notificada_Al_Cliente --> Pagada : Cliente realiza el pago
-                    Notificada_Al_Cliente --> Vencida : Pasa fecha de vto.
-                    
-                    Vencida --> Pagada : Cliente paga con recargo
-                    
-                    Pagada --> [*]
+                    <!-- Edition 1: 4K UHD Remux -->
+                    <div class="p-5 rounded-2xl bg-gradient-to-b from-indochina-crimsonDark/90 to-black/90 border-2 border-indochina-goldBright flex flex-col justify-between space-y-4 shadow-xl relative">
+                        <span class="absolute -top-3 right-4 px-2.5 py-0.5 rounded-full bg-indochina-goldBright text-indochina-abyss font-mono font-bold text-[10px]">
+                            RECOMENDADO
+                        </span>
+                        <div class="space-y-2">
+                            <div class="text-xs font-mono text-indochina-coral font-bold">MASTER OFICIAL · MKV</div>
+                            <h3 class="font-display font-bold text-lg text-white">Edición Imperial 4K UHD HDR10+</h3>
+                            <p class="text-xs text-indochina-parchment">
+                                Corte del Director completo (2h 18m). Incluye pista de audio en Español Rioplatense (Dolby Atmos) y comentarios técnicos.
+                            </p>
+                            <div class="pt-2 space-y-1 text-[11px] font-mono text-indochina-celadon">
+                                <div>• Tamaño: <span class="text-white">18.4 GB</span></div>
+                                <div>• Códec: <span class="text-white">HEVC 10-bit BT.2020</span></div>
+                                <div>• Servidor: <span class="text-emerald-400">Nodo Isla Paraná #01</span></div>
+                            </div>
+                        </div>
+                        <button onclick="startMovieDownload('La.Resurreccion.Del.Dragon.2026.4K.HDR.Directors.Cut.mkv', '18.4 GB', 'MKV 4K HDR10+')" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-indochina-crimson via-indochina-vermilion to-indochina-amber border border-indochina-goldBright font-bold text-xs text-white shadow-lg hover:scale-[1.02] transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-down"></i> DESCARGAR 4K (18.4 GB)
+                        </button>
+                    </div>
+
+                    <!-- Edition 2: iOS 27 Spatial Video -->
+                    <div class="p-5 rounded-2xl bg-black/80 border border-indochina-gold/50 flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <div class="text-xs font-mono text-indochina-goldBright font-bold"><i class="fa-brands fa-apple mr-1"></i> APPLE SPATIAL · MV-HEVC</div>
+                            <h3 class="font-display font-bold text-lg text-white">Edición iOS 27 Spatial Cinema 120Hz</h3>
+                            <p class="text-xs text-indochina-parchment">
+                                Optimizado con metadatos de profundidad estereoscópica para ver el cuello de Nico asomarse en 3D real desde tu pantalla móvil.
+                            </p>
+                            <div class="pt-2 space-y-1 text-[11px] font-mono text-indochina-celadon">
+                                <div>• Tamaño: <span class="text-white">6.8 GB</span></div>
+                                <div>• Formato: <span class="text-white">.MOV / Spatial iOS 27</span></div>
+                                <div>• Servidor: <span class="text-emerald-400">Cloud Indochina CDN</span></div>
+                            </div>
+                        </div>
+                        <button onclick="startMovieDownload('La.Resurreccion.Del.Dragon.2026.iOS27.Spatial.120fps.mov', '6.8 GB', 'iOS 27 Spatial Video')" class="w-full py-3 px-4 rounded-xl bg-indochina-jade hover:bg-indochina-emerald border border-indochina-gold font-bold text-xs text-indochina-goldBright transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-mobile-screen-button"></i> DESCARGAR iOS 27 (6.8 GB)
+                        </button>
+                    </div>
+
+                    <!-- Edition 3: 1080p Light Rip -->
+                    <div class="p-5 rounded-2xl bg-black/80 border border-indochina-gold/50 flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <div class="text-xs font-mono text-indochina-celadon font-bold">VERSIÓN LIGERA · MP4</div>
+                            <h3 class="font-display font-bold text-lg text-white">Full HD 1080p «Edición Mala Señal»</h3>
+                            <p class="text-xs text-indochina-parchment">
+                                Ideal para descargar cruzando el río Paraná en lancha o con datos móviles. Mantiene toda la fidelidad visual Indochina.
+                            </p>
+                            <div class="pt-2 space-y-1 text-[11px] font-mono text-indochina-celadon">
+                                <div>• Tamaño: <span class="text-white">1.95 GB</span></div>
+                                <div>• Códec: <span class="text-white">H.264 AAC 5.1</span></div>
+                                <div>• Servidor: <span class="text-emerald-400">Mirror Campana Fibra</span></div>
+                            </div>
+                        </div>
+                        <button onclick="startMovieDownload('La.Resurreccion.Del.Dragon.2026.1080p.CampanaRip.mp4', '1.95 GB', 'Full HD 1080p MP4')" class="w-full py-3 px-4 rounded-xl bg-indochina-jade hover:bg-indochina-emerald border border-indochina-gold font-bold text-xs text-indochina-goldBright transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-download"></i> DESCARGAR 1080P (1.95 GB)
+                        </button>
+                    </div>
+
+                    <!-- Edition 4: Real Markdown Script & Presskit Download -->
+                    <div class="p-5 rounded-2xl bg-black/80 border border-indochina-gold/50 flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <div class="text-xs font-mono text-indochina-amber font-bold">ARCHIVO REAL INSTANTÁNEO</div>
+                            <h3 class="font-display font-bold text-lg text-white">Guion Original (.MD) + Dosier Empresas</h3>
+                            <p class="text-xs text-indochina-parchment">
+                                Descargá ahora mismo en tu dispositivo el archivo real <code>el_cuello_del_dragon.md</code> junto con el certificado del film.
+                            </p>
+                            <div class="pt-2 space-y-1 text-[11px] font-mono text-indochina-celadon">
+                                <div>• Tamaño: <span class="text-white">24 KB (Instantáneo)</span></div>
+                                <div>• Formato: <span class="text-white">Markdown (.md) UTF-8</span></div>
+                                <div>• Contenido: <span class="text-emerald-400">Historia 100% Íntegra</span></div>
+                            </div>
+                        </div>
+                        <button onclick="downloadRealMarkdownFile()" class="w-full py-3 px-4 rounded-xl bg-indochina-gold hover:bg-indochina-goldBright text-indochina-abyss font-bold text-xs transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-file-arrow-down"></i> BAJAR HISTORIA REAL (.MD)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Interactive Magnet / Direct Link & SHA-256 Bar -->
+                <div class="p-4 rounded-2xl bg-black/90 border border-indochina-gold/40 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+                    <div class="min-w-0 flex-1 font-mono text-xs space-y-1">
+                        <div class="text-indochina-goldBright font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-magnet text-indochina-coral"></i>
+                            <span>ENLACE MAGNET / DIRECT STREAM URI:</span>
+                        </div>
+                        <input id="direct-link-input" type="text" readonly value="magnet:?xt=urn:btih:CAMPANA2026POCHOLAURANICOELDRAGON4K&dn=La.Resurreccion.Del.Dragon.2026.UHD.DCP&tr=udp%3A%2F%2Fparana-isla.campana.ar%3A6969" class="w-full bg-indochina-abyss border border-indochina-gold/30 rounded-lg px-3 py-1.5 text-indochina-celadon text-[11px] focus:outline-none">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="copyDirectDownloadLink()" class="px-4 py-2.5 rounded-xl bg-indochina-crimson hover:bg-indochina-vermilion border border-indochina-gold text-xs font-mono font-bold text-indochina-goldBright whitespace-nowrap transition">
+                            <i class="fa-regular fa-copy mr-1"></i> Copiar Link Directo
+                        </button>
+                    </div>
+                </div>
             </div>
         </section>
 
     </main>
 
-    <footer class="text-center py-8 text-gray-500 text-sm">
-        <p>Documentación generada por el Arquitecto de Sistemas. Motor: Mermaid v11.4.</p>
+    <!-- ==========================================================================
+         FOOTER MAXIMALISTA INDOCHINA
+         ========================================================================== -->
+    <footer class="relative z-10 mt-20 border-t-2 border-indochina-gold/40 bg-black/90 py-12 px-4 sm:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+            <div class="space-y-2">
+                <div class="flex items-center justify-center md:justify-start gap-2">
+                    <i class="fa-solid fa-dragon text-indochina-goldBright text-xl"></i>
+                    <span class="font-display font-bold text-lg gold-foil-text">LA RESURRECCIÓN DEL DRAGÓN (2026)</span>
+                </div>
+                <p class="text-xs text-indochina-parchment max-w-xl">
+                    Basada íntegramente en el manuscrito original <em>«El cuello del dragón»</em>. Filmada en locaciones reales de Campana, el Río Paraná y la Escuela Técnica. Una producción de Nuestro Emprendimiento S.A. (0 Clientes, 3 Planes de Negocio).
+                </p>
+            </div>
+            <div class="text-xs font-mono text-indochina-celadon space-y-1">
+                <div>DISEÑO MAXIMALISTA INDOCHINA • OPTIMIZADO PARA iOS 27</div>
+                <div class="text-indochina-gold">«No preguntábamos a quién estaba buscando. Preguntábamos quién se lo había contado.»</div>
+            </div>
+        </div>
     </footer>
 
-    <script type="module">
-        // Using exactly version 11.4 as requested
-        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.14.0/dist/mermaid.esm.min.mjs';
-        
-        // Initialization matching the Spatial UI styling
-        mermaid.initialize({
-            startOnLoad: true,
-            theme: 'base',
-            securityLevel: 'loose',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-            themeVariables: {
-                // Backgrounds
-                background: 'transparent',
-                primaryColor: '#ffffff',
-                secondaryColor: '#f5f5f7',
-                tertiaryColor: '#e5e5ea',
-                
-                // Borders
-                primaryBorderColor: 'rgba(0, 0, 0, 0.1)',
-                
-                // Texts
-                primaryTextColor: '#1d1d1f',
-                secondaryTextColor: '#424245',
-                
-                // Lines / Arrows
-                lineColor: '#86868b',
-                
-                // Specific chart overrides
-                nodeBorder: 'rgba(0, 0, 0, 0.1)',
-                clusterBkg: 'rgba(255, 255, 255, 0.4)',
-                clusterBorder: 'rgba(0, 0, 0, 0.05)',
-                
-                // State diagram specific
-                stateBkg: 'rgba(255, 255, 255, 0.8)',
-                stateBorder: 'rgba(0,0,0,0.1)',
-                
-                // Class diagram specific
-                classText: '#1d1d1f'
-            },
-            flowchart: {
-                curve: 'basis',
-                padding: 20
+    <!-- ==========================================================================
+         iOS 27 MOBILE SPATIAL BOTTOM DOCK (VISIBLE ON MOBILE & TABLETS)
+         ========================================================================== -->
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 ios27-bottom-dock px-2 pt-2">
+        <div class="grid grid-cols-5 gap-1 max-w-md mx-auto text-center">
+            <a href="#reproductor-oficial" class="flex flex-col items-center py-1 text-indochina-silk hover:text-indochina-goldBright">
+                <i class="fa-brands fa-youtube text-base text-indochina-coral"></i>
+                <span class="text-[10px] font-mono mt-0.5">Video</span>
+            </a>
+            <a href="#sinopsis-maximalista" class="flex flex-col items-center py-1 text-indochina-silk hover:text-indochina-goldBright">
+                <i class="fa-solid fa-scroll text-base text-indochina-gold"></i>
+                <span class="text-[10px] font-mono mt-0.5">Sinopsis</span>
+            </a>
+            <a href="#manuscrito-completo" class="flex flex-col items-center py-1 text-indochina-silk hover:text-indochina-goldBright">
+                <i class="fa-solid fa-book-open text-base text-indochina-celadon"></i>
+                <span class="text-[10px] font-mono mt-0.5">Historia</span>
+            </a>
+            <a href="#laboratorio-rumor" class="flex flex-col items-center py-1 text-indochina-silk hover:text-indochina-goldBright">
+                <i class="fa-solid fa-diagram-project text-base text-indochina-amber"></i>
+                <span class="text-[10px] font-mono mt-0.5">Rumor</span>
+            </a>
+            <a href="#descarga-directa" class="flex flex-col items-center py-1 text-indochina-goldBright font-bold">
+                <i class="fa-solid fa-cloud-arrow-down text-base text-emerald-400"></i>
+                <span class="text-[10px] font-mono mt-0.5">Bajar</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ==========================================================================
+         MODAL DE TRANSFERENCIA DCP / DESCARGA EN TIEMPO REAL
+         ========================================================================== -->
+    <div id="download-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-xl">
+        <div class="maximal-frame rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 relative">
+            <div class="corner-ornament corner-tl"></div>
+            <div class="corner-ornament corner-tr"></div>
+            <div class="corner-ornament corner-bl"></div>
+            <div class="corner-ornament corner-br"></div>
+
+            <div class="flex items-center justify-between border-b border-indochina-gold/40 pb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-satellite-dish text-indochina-goldBright animate-pulse"></i>
+                    <span class="font-display font-bold text-base sm:text-lg gold-foil-text">TRANSFERENCIA NODO PARANÁ-INDOCHINA</span>
+                </div>
+                <button onclick="closeDownloadModal()" class="w-8 h-8 rounded-full bg-indochina-crimson/80 text-white hover:bg-indochina-vermilion flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-2 font-mono text-xs">
+                <div class="text-indochina-celadon">ARCHIVO SELECCIONADO:</div>
+                <div id="modal-filename" class="text-indochina-goldBright font-bold break-all text-sm">La.Resurreccion.Del.Dragon.2026.4K.mkv</div>
+                <div class="flex justify-between text-[11px] text-indochina-parchment pt-1">
+                    <span id="modal-edition-tag">Edición: MKV 4K HDR10+</span>
+                    <span id="modal-filesize-tag">Tamaño: 18.4 GB</span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="space-y-2">
+                <div class="flex justify-between text-xs font-mono">
+                    <span id="modal-status-step" class="text-emerald-400">Conectando con espejos de la Isla de Campana...</span>
+                    <span id="modal-progress-pct" class="text-indochina-goldBright font-bold">0%</span>
+                </div>
+                <div class="w-full h-4 rounded-full bg-black border border-indochina-gold/60 overflow-hidden p-0.5">
+                    <div id="modal-progress-bar" class="h-full rounded-full bg-gradient-to-r from-indochina-crimson via-indochina-amber to-indochina-goldBright transition-all duration-200" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 pt-2">
+                <button onclick="downloadRealMarkdownFile()" class="flex-1 py-2.5 px-4 rounded-xl bg-indochina-gold text-indochina-abyss font-mono font-bold text-xs hover:bg-indochina-goldBright transition">
+                    <i class="fa-solid fa-file-lines mr-1"></i> Guardar Manuscrito (.MD)
+                </button>
+                <button onclick="closeDownloadModal()" class="py-2.5 px-4 rounded-xl bg-indochina-jade border border-indochina-gold/50 font-mono text-xs text-indochina-silk hover:bg-indochina-emerald transition">
+                    Minimizar en Segundo Plano
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Toast Notification Box (Zero alert() policy) -->
+    <div id="custom-toast" class="fixed top-20 right-4 z-50 transform translate-x-[150%] transition-transform duration-500 max-w-sm">
+        <div class="p-4 rounded-2xl bg-indochina-jadeDark/95 border-2 border-indochina-goldBright shadow-2xl flex items-start gap-3">
+            <i class="fa-solid fa-dragon text-indochina-coral text-lg mt-0.5"></i>
+            <div class="text-xs">
+                <div id="toast-title" class="font-display font-bold text-indochina-goldBright uppercase">Notificación del Sistema</div>
+                <p id="toast-message" class="text-indochina-silk mt-1 leading-snug"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ==========================================================================
+           1. GLOBAL STATE & STORY DATA
+           ========================================================================== */
+        const VERBATIM_MARKDOWN_STORY = `# El cuello del dragón (Película: La resurrección del dragón)
+
+En Campana los secretos duran menos que una historia de Instagram. Todos conocen a alguien que conoce a alguien, y cuando una noticia llega al último de la cadena, ya no se parece en nada a la original. Yo eso lo sabía. Lo que no sabía era que un día iba a terminar metido en el medio de una historia tan absurda que, contada en voz alta, parecía un caso del **Mentalista** escrito por alguien que se había quedado sin presupuesto.
+
+Juan Hernández, al que todos le decían **Pocho**, era un pibe de la isla que tenía una idea fija: crecer. No solamente ganar plata o hacerse conocido; quería convertirse en alguien distinto, construir una vida que no se pareciera a la que le había tocado. Sus viejos eran muy estrictos y estaban profundamente arraigados a los Testigos de Jehová. Juan aprendió a guardarse muchas cosas, a observar antes de hablar y a bancarse más de lo que debía. El problema era que, cuando se le llenaba el vaso, no avisaba: explotaba.
+
+Iba a la técnica, del otro lado del Paraná. Todos los días, cruzar el río era como recordarse que, para llegar adonde quería, siempre tenía que atravesar algo. Hasta que conoció a Laura por la música. Se pusieron de novios y al principio parecía una historia linda. Después se convirtió en una de esas relaciones en las que nadie sabe si está enamorado o simplemente está esperando la próxima discusión. Hubo infidelidades, reconciliaciones, reproches y peleas por cosas que, vistas desde afuera, parecían pequeñas; adentro, cada una era el fin del mundo.
+
+Juan, para su edad, tenía una manera bastante extraña de mirar la vida. Pensaba en proyectos, en el futuro, en cómo salir adelante. Laura vivía las emociones con otro volumen: un problema podía convertirse en una catástrofe y una discusión, en una sentencia definitiva. Ninguno sabía cómo bajarle el volumen a la relación. Hasta que Juan se cansó y cortó.
+
+Y ahí empezó la segunda historia: la que se contaba sin él.
+
+Laura habló mal de Juan por distintos lados. O, al menos, eso le llegaba a él. Cada versión venía un poco más cargada que la anterior. Juan intentó seguir con su vida y se aferró a mí. Nos pusimos a armar un emprendimiento gigantesco, de esos que tienen nombre, visión, misión, plan de expansión y cero clientes. En nuestros documentos, la empresa ya dominaba el mercado. En la realidad, todavía estábamos esperando que alguien nos preguntara cuánto salía el servicio.
+
+Mientras nosotros soñábamos en grande, los rumores también crecían. Y entonces apareció **Nico, el Dragón**.
+
+El apodo no salió de la nada. Nico tenía un cuello tan largo que, cuando se asomaba desde una esquina para mirar si Juan estaba ahí, primero aparecía el cuello y varios segundos después el resto del individuo. Parecía que el cuerpo venía cargando con mala señal. Si lo veías asomarse detrás de una pared, entendías enseguida el apodo. Como diría cualquiera con un mínimo de sentido del espectáculo: *¡Nico, el Dragón!*
+
+Al principio eran cruces sueltos. Después, encuentros demasiado oportunos. En la escuela, al salir, por la calle, en redes. Juan empezó a publicar contenido de motivación y algunos videos tuvieron bastante repercusión. Quería hablar de disciplina, crecimiento y de levantarse después de una mala etapa. Pero en una ciudad donde todos se conocen, hasta una frase sobre superar el pasado puede ser interpretada como una indirecta, una confesión o una declaración de guerra.
+
+Nico parecía convencido de que Juan era el villano de una historia que él conocía de memoria. El detalle era que nunca había escuchado la historia completa. Y, aun así, lo perseguía como si le hubieran encargado resolver un crimen nacional.
+
+Hasta que llegó el último encuentro.
+
+Fue uno de esos momentos en los que el aire se pone raro antes de que pase algo. Nico lo interceptó decidido a terminar todo de una vez. Juan se quedó helado. No entendía qué estaba pasando ni por qué aquello seguía escalando después de tanto tiempo.
+
+—¿Qué pasa, Nico? ¿Qué hice ahora?
+
+El Dragón se acomodó, infló el pecho y largó todo junto:
+
+—¡Vos le pegabas a Laura! ¡La hacías sentir mal! ¡La gorreaste! ¡La destruiste!
+
+Juan lo miró, asustado, pero también desconcertado. Algunas acusaciones venían de una relación que había sido complicada; otra era algo mucho más grave. Y lo más inquietante era que Nico no estaba preguntando nada. Ya había dictado sentencia.
+
+Entonces Juan hizo algo que no esperaba nadie: en lugar de discutir, empezó a preguntar.
+
+—¿Vos me viste pegarle?
+—No, pero me contaron.
+—¿Quién te lo contó?
+
+Nico nombró a un conocido. Juan preguntó quién se lo había dicho a ese conocido. Apareció otro nombre. Después, otro. Cada respuesta lo alejaba un poco más de Laura y lo acercaba a una frase que nadie podía ubicar en una conversación concreta.
+
+Juan siguió, tranquilo:
+
+—¿Vos escuchaste a Laura decir que yo le pegué?
+
+Nico no contestó enseguida. Miró hacia un costado, como si estuviera buscando a alguien que le soplara la respuesta.
+
+—No exactamente. Ella dijo que la relación la había hecho sufrir. Que vos la habías lastimado. Después me llegó lo otro.
+
+Ahí estaba. La pieza que faltaba no era una prueba: era una palabra que se había agregado en el camino. *Me hizo mal* se había convertido en *me maltrataba*. Y, de alguna manera, *me maltrataba* había terminado en *le pegaba*. Nadie podía señalar el momento exacto en que ocurrió la transformación, porque cada uno había recibido la historia ya deformada y la había repetido como si la hubiera visto con sus propios ojos.
+
+El caso empezaba a cerrarse, pero todavía quedaba una pregunta.
+
+—¿Y mis videos? —dijo Juan—. ¿También te dijeron qué significaban o los interpretaste vos?
+
+Nico sacó el celular y le mostró uno. Juan lo reconoció enseguida. Era un video suyo sobre las personas que se victimizan después de una ruptura. Lo había publicado en un momento de bronca, convencido de que estaba hablando en general. Pero, si uno conocía la historia con Laura, era fácil pensar que tenía destinataria.
+
+Juan bajó la mirada. Por primera vez, entendió que tampoco había sido tan invisible como creía. Él no había inventado las acusaciones, pero algunas indirectas suyas habían alimentado el incendio. Quería crecer y demostrar que estaba bien; en el camino, había dejado frases que otros podían usar para confirmar lo que ya querían creer.
+
+—Yo me hago cargo de mis indirectas —dijo—. Pero no me voy a hacer cargo de algo tan grave que nadie puede demostrar y que, encima, vos ni siquiera escuchaste de la persona que supuestamente lo dijo.
+
+Nico no tenía una respuesta. Había llegado preparado para una pelea y se encontraba frente a una pregunta mucho más incómoda: **¿y si había pasado meses persiguiendo a alguien por una historia que nunca se tomó el trabajo de comprobar?**
+
+El Dragón bajó la cabeza. El cuello, como siempre, tardó un poco más.
+
+No hubo golpes, ni confesiones espectaculares, ni música de suspenso. El caso se resolvió con un silencio larguísimo y un tipo descubriendo que defender a alguien no es lo mismo que defender cualquier cosa que le cuenten sobre esa persona.
+
+Después de aquello, Nico dejó de aparecer en cada esquina. Juan siguió creando contenido, aunque aprendió a pensar dos veces antes de publicar una frase escrita con bronca. Y nosotros seguimos con nuestro emprendimiento, que para ese momento ya tenía una identidad visual espectacular, tres planes de negocio y la misma cantidad de clientes que al principio: cero.
+
+Con el tiempo entendí cuál había sido el verdadero giro de toda la historia. No era que Laura fuera una villana secreta, ni que Nico fuera un monstruo, ni que Juan fuera el santo de la película. Era algo bastante más peligroso y bastante más común: **cada uno había confundido su versión con la verdad**. Unos por dolor, otros por orgullo y otros por las ganas de convertirse en héroes de una historia ajena.
+
+En Campana, desde entonces, cuando alguien decía que había visto a Nico el Dragón asomarse detrás de una pared, ya no preguntábamos a quién estaba buscando.
+
+Preguntábamos quién se lo había contado.`;
+
+        function showToast(title, message) {
+            const toast = document.getElementById('custom-toast');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-message').textContent = message;
+            toast.classList.remove('translate-x-[150%]');
+            setTimeout(() => {
+                toast.classList.add('translate-x-[150%]');
+            }, 4200);
+        }
+
+        function tilt3DCard(event, element) {
+            const rect = element.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -8;
+            const rotateY = ((x - centerX) / centerX) * 8;
+            element.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        }
+
+        function reset3DCard(element) {
+            element.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+        }
+
+        /* ==========================================================================
+           2. THREE.JS 3D INDOCHINA DRAGON & PARANÁ LANTERNS SCENE
+           ========================================================================== */
+        let scene, camera, renderer, dragonSegments = [], lanterns = [];
+        let isDragging3D = false, prevMouseX = 0, prevMouseY = 0;
+        let cameraAngleX = 0, cameraAngleY = 0.25, cameraMode = 0;
+
+        function initThreeJSBackground() {
+            const canvas = document.getElementById('threejs-dragon-canvas');
+            if (!canvas || typeof THREE === 'undefined') return;
+
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x040d0b, 0.025);
+
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 200);
+            camera.position.set(0, 4, 22);
+
+            renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Lights: Indochina Gold, Crimson & Jade
+            const ambientLight = new THREE.AmbientLight(0x164a3e, 1.4);
+            scene.add(ambientLight);
+
+            const goldLight = new THREE.PointLight(0xf2cf66, 2.8, 60);
+            goldLight.position.set(10, 12, 10);
+            scene.add(goldLight);
+
+            const crimsonLight = new THREE.PointLight(0xb8252b, 2.5, 60);
+            crimsonLight.position.set(-12, -5, 8);
+            scene.add(crimsonLight);
+
+            // Create the stylized 3D Dragon Spine ("El Cuello Infinito del Dragón")
+            const torusGeo = new THREE.TorusGeometry(1.1, 0.18, 12, 28);
+            for (let i = 0; i < 28; i++) {
+                const isHead = i === 0;
+                const mat = new THREE.MeshStandardMaterial({
+                    color: isHead ? 0xf2cf66 : (i % 2 === 0 ? 0xc9a23f : 0x8b1e24),
+                    metalness: 0.75,
+                    roughness: 0.25,
+                    emissive: isHead ? 0xb8252b : 0x1f0b24,
+                    emissiveIntensity: 0.35
+                });
+                const segment = new THREE.Mesh(torusGeo, mat);
+                const scale = isHead ? 1.5 : Math.max(0.35, 1.2 - i * 0.03);
+                segment.scale.set(scale, scale, scale);
+                scene.add(segment);
+                dragonSegments.push(segment);
             }
-        });
+
+            // Create Floating Indochina River Lanterns
+            const lanternGeo = new THREE.OctahedronGeometry(0.35, 0);
+            for (let i = 0; i < 45; i++) {
+                const lanternMat = new THREE.MeshBasicMaterial({
+                    color: i % 3 === 0 ? 0xf2cf66 : (i % 3 === 1 ? 0xe04f44 : 0x68b096),
+                    wireframe: i % 2 === 0
+                });
+                const lantern = new THREE.Mesh(lanternGeo, lanternMat);
+                lantern.position.set(
+                    (Math.random() - 0.5) * 45,
+                    (Math.random() - 0.5) * 28,
+                    (Math.random() - 0.5) * 30 - 5
+                );
+                lantern.userData = {
+                    speedY: 0.01 + Math.random() * 0.025,
+                    phase: Math.random() * Math.PI * 2
+                };
+                scene.add(lantern);
+                lanterns.push(lantern);
+            }
+
+            // Mouse & Touch Camera Controls (as required for 3D simulations)
+            window.addEventListener('mousedown', (e) => {
+                isDragging3D = true;
+                prevMouseX = e.clientX;
+                prevMouseY = e.clientY;
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging3D) {
+                    cameraAngleX += (e.clientX / window.innerWidth - 0.5) * 0.002;
+                    return;
+                }
+                const dx = e.clientX - prevMouseX;
+                const dy = e.clientY - prevMouseY;
+                cameraAngleX += dx * 0.005;
+                cameraAngleY = Math.max(-0.8, Math.min(0.8, cameraAngleY + dy * 0.005));
+                prevMouseX = e.clientX;
+                prevMouseY = e.clientY;
+            });
+            window.addEventListener('mouseup', () => { isDragging3D = false; });
+
+            window.addEventListener('resize', () => {
+                if (!camera || !renderer) return;
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        function toggle3DCameraMode() {
+            cameraMode = (cameraMode + 1) % 3;
+            const labels = [
+                '3D Órbita: Paraná Imperial',
+                '3D Órbita: Cuello del Dragón',
+                '3D Órbita: Cenital Isla'
+            ];
+            document.getElementById('camera-mode-label').textContent = labels[cameraMode];
+            showToast('Cámara 3D WebGL', `Ángulo cambiado a: ${labels[cameraMode]}`);
+        }
+
+        /* ==========================================================================
+           3. YOUTUBE EMBED CINEMA PLAYER ("LA RESURRECCIÓN DEL DRAGÓN")
+           ========================================================================== */
+        let ytPlaying = false;
+        let ytProgress = 0; // 0 to 100
+        let currentActIndex = 0;
+
+        const CINEMA_ACTS = [
+            {
+                code: 'ACTO I · EL RÍO PARANÁ & LA ISLA',
+                chapterTitle: 'Capítulo 1: El Pibe de la Isla',
+                lens: 'LENTE: 35MM ANAMÓRFICO T1.4',
+                directorNote: 'Plano secuencia sobre la lancha colectiva cruzando el Paraná al amanecer. Pocho observa en silencio mientras la niebla esconde la orilla de Campana.',
+                subtitle: '«Todos los días, cruzar el río era como recordarse que siempre tenía que atravesar algo...»',
+                timeCode: '12:40',
+                primaryColor: '#0d2e26',
+                accentColor: '#f2cf66'
+            },
+            {
+                code: 'ACTO II · LAURA & EL VOLUMEN ALTO',
+                chapterTitle: 'Capítulo 2: Canciones y Catástrofes',
+                lens: 'LENTE: 50MM COOKE SPEED PANCHRO',
+                directorNote: 'Cámara en mano a 110 decibeles emocionales. Luces de neón carmesí y púrpura reflejadas sobre amplificadores de guitarra.',
+                subtitle: '«Nadie sabía si estaba enamorado o simplemente esperando la próxima discusión...»',
+                timeCode: '39:15',
+                primaryColor: '#4a154b',
+                accentColor: '#e04f44'
+            },
+            {
+                code: 'ACTO III · LA EMPRESA DE CERO CLIENTES',
+                chapterTitle: 'Capítulo 3: Imperio de Papel',
+                lens: 'LENTE: 28MM MACRO ZEISS',
+                directorNote: 'Montaje frenético de PDFs corporativos con visión, misión, tres planes de expansión y el contador de clientes clavado en 0.',
+                subtitle: '«En nuestros documentos, la empresa ya dominaba el mercado. En la realidad: cero clientes.»',
+                timeCode: '1:04:50',
+                primaryColor: '#164a3e',
+                accentColor: '#76b5a0'
+            },
+            {
+                code: 'ACTO IV · ¡NICO, EL DRAGÓN!',
+                chapterTitle: 'Capítulo 4: El Cuello con Mala Señal',
+                lens: 'LENTE: 18MM GRAN ANGULAR + STEP PRINTING',
+                directorNote: 'Esquina de ladrillos en Campana. Primero asoma el cuello interminable de Nico; 4 segundos después termina de cargar el resto del individuo.',
+                subtitle: '«Primero aparecía el cuello y varios segundos después el resto del individuo... ¡Nico, el Dragón!»',
+                timeCode: '1:33:22',
+                primaryColor: '#5e1116',
+                accentColor: '#f5d77f'
+            },
+            {
+                code: 'ACTO V · EL INTERROGATORIO SOCRÁTICO',
+                chapterTitle: 'Capítulo 5: ¿Quién te lo contó?',
+                lens: 'LENTE: 85MM RETRATO CERRADO',
+                directorNote: 'El aire se vuelve espeso. Sin golpes ni música de suspenso: Juan desarma meses de persecución preguntando por el eslabón perdido.',
+                subtitle: '«El Dragón bajó la cabeza. El cuello, como siempre, tardó un poco más.»',
+                timeCode: '2:05:10',
+                primaryColor: '#270e2e',
+                accentColor: '#c9a23f'
+            }
+        ];
+
+        function selectCinemaAct(index) {
+            currentActIndex = index;
+            ytProgress = index * 20 + 4;
+            document.getElementById('yt-progress-slider').value = ytProgress;
+            updateYouTubeHUD();
+            for (let i = 0; i < 5; i++) {
+                const btn = document.getElementById(`act-btn-${i}`);
+                if (!btn) continue;
+                if (i === index) {
+                    btn.className = 'act-selector-btn p-2.5 rounded-xl bg-indochina-crimson/85 border-2 border-indochina-goldBright text-left transition scale-[1.02]';
+                } else {
+                    btn.className = 'act-selector-btn p-2.5 rounded-xl bg-indochina-jadeDark/80 border border-indochina-gold/30 text-left transition hover:scale-[1.02]';
+                }
+            }
+        }
+
+        function nextCinemaAct() {
+            selectCinemaAct((currentActIndex + 1) % CINEMA_ACTS.length);
+        }
+
+        function cycleVideoActSelector() {
+            nextCinemaAct();
+            showToast('Cambio de Rollo DCP', `Reproduciendo ${CINEMA_ACTS[currentActIndex].code}`);
+        }
+
+        function updateYouTubeHUD() {
+            const act = CINEMA_ACTS[currentActIndex];
+            document.getElementById('hud-act-code').textContent = act.code;
+            document.getElementById('hud-lens-spec').textContent = act.lens;
+            document.getElementById('hud-director-note').textContent = act.directorNote;
+            document.getElementById('yt-live-subtitle').textContent = act.subtitle;
+            document.getElementById('yt-current-time').textContent = act.timeCode;
+            const pill = document.getElementById('yt-chapter-pill');
+            if (pill) pill.innerHTML = `<i class="fa-solid fa-bookmark text-[9px]"></i> ${act.chapterTitle}`;
+        }
+
+        function toggleYouTubePlay() {
+            ytPlaying = !ytPlaying;
+            const overlay = document.getElementById('yt-center-play-overlay');
+            const icon = document.getElementById('yt-play-icon');
+            if (ytPlaying) {
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+                icon.className = 'fa-solid fa-pause text-base text-indochina-goldBright';
+                document.getElementById('island-status-text').textContent = 'REPRODUCIENDO: LA RESURRECCIÓN DEL DRAGÓN [4K]';
+            } else {
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                icon.className = 'fa-solid fa-play text-base';
+                document.getElementById('island-status-text').textContent = 'PAUSADO · LISTO PARA DESCARGA DIRECTA';
+            }
+        }
+
+        function scrubYouTubeVideo(val) {
+            ytProgress = parseFloat(val);
+            const actIdx = Math.min(4, Math.floor(ytProgress / 20));
+            if (actIdx !== currentActIndex) {
+                selectCinemaAct(actIdx);
+            }
+        }
+
+        function renderYouTubeCinemaFrame(time) {
+            const canvas = document.getElementById('yt-cinema-canvas');
+            if (!canvas) return;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            if (canvas.width !== Math.floor(rect.width) || canvas.height !== Math.floor(rect.height)) {
+                canvas.width = Math.floor(rect.width);
+                canvas.height = Math.floor(rect.height);
+            }
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            const act = CINEMA_ACTS[currentActIndex];
+
+            // Background Anamorphic Gradient
+            const grad = ctx.createLinearGradient(0, 0, w, h);
+            grad.addColorStop(0, '#040d0b');
+            grad.addColorStop(0.5, act.primaryColor);
+            grad.addColorStop(1, '#1a0609');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+
+            // Ornamental Sun / Moon of the Paraná Delta
+            const sunY = h * 0.42 + Math.sin(time * 0.001) * 12;
+            const sunGrad = ctx.createRadialGradient(w * 0.5, sunY, 5, w * 0.5, sunY, h * 0.32);
+            sunGrad.addColorStop(0, act.accentColor);
+            sunGrad.addColorStop(0.4, 'rgba(184, 37, 43, 0.45)');
+            sunGrad.addColorStop(1, 'transparent');
+            ctx.fillStyle = sunGrad;
+            ctx.beginPath();
+            ctx.arc(w * 0.5, sunY, h * 0.32, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Scene-specific procedural illustration
+            if (currentActIndex === 0) {
+                // Act 1: Paraná River Waves & Pocho's Boat
+                for (let l = 0; l < 5; l++) {
+                    ctx.beginPath();
+                    const baseH = h * 0.62 + l * 18;
+                    ctx.moveTo(0, h);
+                    for (let x = 0; x <= w; x += 20) {
+                        const y = baseH + Math.sin(x * 0.015 + time * 0.002 + l) * 8;
+                        ctx.lineTo(x, y);
+                    }
+                    ctx.lineTo(w, h);
+                    ctx.fillStyle = `rgba(7, 26, 22, ${0.45 + l * 0.1})`;
+                    ctx.fill();
+                }
+                // Boat silhouette
+                const boatX = (w * 0.35) + Math.sin(time * 0.001) * 40;
+                const boatY = h * 0.64;
+                ctx.fillStyle = '#f2cf66';
+                ctx.beginPath();
+                ctx.moveTo(boatX - 35, boatY);
+                ctx.lineTo(boatX + 35, boatY);
+                ctx.lineTo(boatX + 22, boatY + 12);
+                ctx.lineTo(boatX - 22, boatY + 12);
+                ctx.closePath();
+                ctx.fill();
+            } else if (currentActIndex === 1) {
+                // Act 2: High-volume Audio Soundwaves (Laura & Juan)
+                ctx.strokeStyle = '#f2cf66';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for (let x = 0; x < w; x += 6) {
+                    const amp = Math.sin(x * 0.04 + time * 0.006) * Math.cos(x * 0.01 - time * 0.003) * (h * 0.22);
+                    if (x === 0) ctx.moveTo(x, h * 0.5 + amp);
+                    else ctx.lineTo(x, h * 0.5 + amp);
+                }
+                ctx.stroke();
+            } else if (currentActIndex === 2) {
+                // Act 3: Zero Clients Hologram
+                ctx.strokeStyle = 'rgba(201, 162, 63, 0.35)';
+                ctx.strokeRect(w * 0.28, h * 0.25, w * 0.44, h * 0.45);
+                ctx.fillStyle = '#f2cf66';
+                ctx.font = `bold ${Math.max(18, Math.floor(w * 0.035))}px "Cinzel Decorative", serif`;
+                ctx.textAlign = 'center';
+                ctx.fillText('CLIENTES REALES: 0', w * 0.5, h * 0.5);
+            } else if (currentActIndex === 3) {
+                // Act 4: Nico el Dragón peeking around the brick wall with bad signal
+                const wallX = w * 0.28;
+                ctx.fillStyle = '#24080b';
+                ctx.fillRect(0, 0, wallX, h);
+                ctx.strokeStyle = '#c9a23f';
+                ctx.strokeRect(0, 0, wallX, h);
+
+                const neckStretch = 90 + Math.sin(time * 0.003) * 55;
+                ctx.strokeStyle = '#f2cf66';
+                ctx.lineWidth = 14;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(wallX - 10, h * 0.58);
+                ctx.quadraticCurveTo(wallX + neckStretch * 0.6, h * 0.42, wallX + neckStretch, h * 0.46);
+                ctx.stroke();
+
+                // Head at the end of the long neck
+                ctx.fillStyle = '#e04f44';
+                ctx.beginPath();
+                ctx.arc(wallX + neckStretch, h * 0.46, 16, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                // Act 5: The Socratic Mirror & Silence
+                ctx.strokeStyle = '#f2cf66';
+                ctx.lineWidth = 1.5;
+                for (let r = 20; r < h * 0.4; r += 26) {
+                    ctx.beginPath();
+                    ctx.arc(w * 0.5, h * 0.48, r + (time * 0.02) % 26, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            }
+
+            // Film Grain & Cinema Letterbox Bars
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, w, h * 0.08);
+            ctx.fillRect(0, h * 0.92, w, h * 0.08);
+
+            if (ytPlaying) {
+                ytProgress = (ytProgress + 0.025) % 100;
+                document.getElementById('yt-progress-slider').value = ytProgress;
+            }
+        }
+
+        /* ==========================================================================
+           4. INTERACTIVE RUMOR MUTATION INSPECTOR ("EL TELÉFONO DESCOMPUESTO")
+           ========================================================================== */
+        const RUMOR_CHAIN_DATA = [
+            {
+                title: 'Eslabón #01: El Desahogo Original de Laura',
+                mutation: 'FRASE: «La relación me hizo sufrir / Me hizo mal»',
+                quote: '«Cortamos con Juan. La verdad es que la relación me hizo sufrir un montón, me lastimó emocionalmente y terminamos re mal.»',
+                psych: 'Laura expresa un dolor subjetivo real tras una relación caótica, pero no formula ninguna acusación de violencia física.',
+                evidence: 'Testimonio directo de ruptura sentimental. Cero imputación de golpes.',
+                distortion: '0%'
+            },
+            {
+                title: 'Eslabón #02: Primera Retransmisión en Campana',
+                mutation: 'MUTACIÓN: De «Me hizo mal» a «La trataba re mal»',
+                quote: '«¿Sabés que Pocho la hacía sufrir a Laura? Me contó que la relación la destruyó, pobre piba, la trataba re mal.»',
+                psych: 'El primer receptor busca empatizar agregando énfasis dramático. El verbo cambia de sufrimiento mutuo a acción unilateral.',
+                evidence: 'Rumores de segunda mano en recreos y plazas. Sin fecha ni lugar.',
+                distortion: '32%'
+            },
+            {
+                title: 'Eslabón #03: El Salto Semántico en la Escuela Técnica',
+                mutation: 'MUTACIÓN: De «La trataba mal» a «La maltrataba»',
+                quote: '«Che, dicen del otro lado del río que Juan Hernández la maltrataba a la novia. Además mirá la cara de serio que pone siempre.»',
+                psych: 'El carácter reservado de Pocho (criado para callar y aguantar) es usado como falso indicio de culpabilidad.',
+                evidence: 'Prejuicio colectivo + teléfono descompuesto.',
+                distortion: '68%'
+            },
+            {
+                title: 'Eslabón #04: Las Indirectas de Juan en Redes',
+                mutation: 'COMBUSTIBLE: Reels de superación y bronca post-ruptura',
+                quote: '«Encima mirá el video que subió Pocho hablando de la gente que se victimiza... ¡Está confesando que es culpable!»',
+                psych: 'Juan publica una indirecta con bronca creyendo hablar en general. En un pueblo chico, alimenta el sesgo de confirmación.',
+                evidence: 'Video real de Juan, malinterpretado como declaración de guerra.',
+                distortion: '85%'
+            },
+            {
+                title: 'Eslabón #05: La Sentencia Final de Nico, el Dragón',
+                mutation: 'MUTACIÓN FINAL: De «Me maltrataba» a «¡Vos le pegabas!»',
+                quote: '«¡Vos le pegabas a Laura! ¡La hacías sentir mal! ¡La gorreaste! ¡La destruiste!»',
+                psych: 'Nico necesita convertirse en el héroe justiciero de una historia ajena y dicta sentencia sin jamás haber hablado con la fuente.',
+                evidence: 'Cero pruebas. Nico admite: «No te vi, me contaron».',
+                distortion: '100%'
+            }
+        ];
+
+        function inspectRumorNode(idx) {
+            const data = RUMOR_CHAIN_DATA[idx];
+            document.getElementById('rumor-stage-title').textContent = data.title;
+            document.getElementById('rumor-linguistic-mutation').textContent = data.mutation;
+            document.getElementById('rumor-quote-box').textContent = data.quote;
+            document.getElementById('rumor-psych-analysis').textContent = data.psych;
+            document.getElementById('rumor-evidence-status').textContent = data.evidence;
+            document.getElementById('distortion-meter-badge').textContent = `DEFORMACIÓN: ${data.distortion}`;
+
+            for (let i = 0; i < 5; i++) {
+                const btn = document.getElementById(`rumor-node-${i}`);
+                if (i === idx) {
+                    btn.className = 'rumor-node-btn p-3 rounded-xl bg-indochina-crimson/90 border-2 border-indochina-goldBright text-left transition scale-[1.03]';
+                } else {
+                    btn.className = 'rumor-node-btn p-3 rounded-xl bg-indochina-jadeDark/80 border border-indochina-gold/30 text-left transition';
+                }
+            }
+        }
+
+        /* ==========================================================================
+           5. SOCRATIC INTERROGATION SIMULATOR ("EL MENTALISTA SIN PRESUPUESTO")
+           ========================================================================== */
+        function playInterrogationStep(step) {
+            const speaker = document.getElementById('interrogation-speaker');
+            const dialogue = document.getElementById('interrogation-dialogue');
+            const feedback = document.getElementById('interrogation-feedback');
+            const bar = document.getElementById('nico-conviction-bar');
+            const val = document.getElementById('nico-conviction-value');
+
+            if (step === 1) {
+                speaker.textContent = 'NICO, EL DRAGÓN (Descolocado):';
+                dialogue.textContent = '«—No, yo no te vi pegarle... pero me contaron.»';
+                feedback.textContent = 'IMPACTO FORENSE: Nico admite que no es testigo presencial. Su certeza cae al 65%.';
+                bar.style.width = '65%';
+                val.textContent = '65% (DUDA INICIAL)';
+            } else if (step === 2) {
+                speaker.textContent = 'CADENA DE NOMBRES EN CAMPANA:';
+                dialogue.textContent = '«—Me lo dijo un conocido... que se lo escuchó a otro... que lo supo por otro.»';
+                feedback.textContent = 'IMPACTO FORENSE: Cada nombre aleja más la versión de Laura y la acerca a una frase sin origen concreto.';
+                bar.style.width = '35%';
+                val.textContent = '35% (CADENA ROTA)';
+            } else if (step === 3) {
+                speaker.textContent = 'NICO, EL DRAGÓN (Mirando hacia un costado):';
+                dialogue.textContent = '«—No exactamente. Ella dijo que la relación la había hecho sufrir. Que vos la habías lastimado. Después me llegó lo otro.»';
+                feedback.textContent = 'PIEZA CLAVE: «Me hizo mal» → «Me maltrataba» → «Le pegaba». La mutación queda al descubierto.';
+                bar.style.width = '12%';
+                val.textContent = '12% (COLAPSO DEL RUMOR)';
+            } else if (step === 4) {
+                speaker.textContent = 'SILENCIO ABSOLUTO EN LA ESQUINA:';
+                dialogue.textContent = '«El Dragón bajó la cabeza. El cuello, como siempre, tardó un poco más.»';
+                feedback.textContent = 'CASO CERRADO: Juan asume sus indirectas en redes pero desmonta la calumnia. Nico descubre que defendió un rumor sin comprobarlo.';
+                bar.style.width = '0%';
+                val.textContent = '0% (EL DRAGÓN BAJA LA CABEZA)';
+                triggerDragonBow();
+            }
+        }
+
+        /* ==========================================================================
+           6. NECK LATENCY SIMULATOR ("EL CUELLO CON MALA SEÑAL")
+           ========================================================================== */
+        let neckLatencySeconds = 3.5;
+        let neckProgress = 0.25;
+        let bodyProgress = 0.25;
+        let headBowed = false;
+
+        function updateNeckLatency(val) {
+            neckLatencySeconds = parseFloat(val);
+            document.getElementById('neck-delay-label').textContent = `${neckLatencySeconds.toFixed(1)} Segundos (Mala Señal)`;
+            document.getElementById('neck-ping-badge').textContent = `PING: ${Math.round(neckLatencySeconds * 1000)} ms`;
+        }
+
+        function triggerDragonPeek() {
+            headBowed = false;
+            neckProgress = 0;
+            bodyProgress = 0;
+            document.getElementById('neck-load-state').textContent = 'ASOMANDO CUELLO PRIMERO...';
+            setTimeout(() => {
+                neckProgress = 1;
+            }, 60);
+            setTimeout(() => {
+                bodyProgress = 1;
+                document.getElementById('neck-load-state').textContent = 'CUERPO CARGADO (CON DELAY)';
+            }, neckLatencySeconds * 1000);
+        }
+
+        function triggerDragonBow() {
+            headBowed = true;
+            document.getElementById('neck-load-state').textContent = 'BAJANDO LA CABEZA (EL CUELLO TARDA MÁS)';
+        }
+
+        function renderNeckSimulator(time) {
+            const canvas = document.getElementById('neck-simulator-canvas');
+            if (!canvas) return;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            if (canvas.width !== Math.floor(rect.width) || canvas.height !== Math.floor(rect.height)) {
+                canvas.width = Math.floor(rect.width);
+                canvas.height = Math.floor(rect.height);
+            }
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Street background grid
+            ctx.strokeStyle = 'rgba(201, 162, 63, 0.12)';
+            for (let x = 0; x < w; x += 28) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+            }
+
+            const wallRightX = w * 0.32;
+            const targetHeadX = neckProgress > 0.5 ? w * 0.72 : wallRightX - 15;
+            const targetBodyX = bodyProgress > 0.5 ? w * 0.46 : wallRightX - 40;
+
+            if (!window._currHeadX) window._currHeadX = wallRightX + 40;
+            if (!window._currBodyX) window._currBodyX = wallRightX - 30;
+            if (!window._currHeadY) window._currHeadY = h * 0.42;
+
+            window._currHeadX += (targetHeadX - window._currHeadX) * 0.08;
+            window._currBodyX += (targetBodyX - window._currBodyX) * 0.04;
+            const desiredY = headBowed ? h * 0.72 : h * 0.42;
+            window._currHeadY += (desiredY - window._currHeadY) * 0.05;
+
+            // Draw Body
+            ctx.fillStyle = '#7a161d';
+            ctx.strokeStyle = '#f2cf66';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(window._currBodyX - 24, h * 0.52, 48, 70, 10);
+            ctx.fill();
+            ctx.stroke();
+
+            // Draw Ultra-Long Neck
+            ctx.strokeStyle = '#c9a23f';
+            ctx.lineWidth = 14;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(window._currBodyX, h * 0.55);
+            ctx.bezierCurveTo(
+                window._currBodyX + 40, h * 0.35,
+                window._currHeadX - 40, window._currHeadY - 15,
+                window._currHeadX, window._currHeadY
+            );
+            ctx.stroke();
+
+            // Draw Head
+            ctx.fillStyle = '#f2cf66';
+            ctx.beginPath();
+            ctx.arc(window._currHeadX, window._currHeadY, 17, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Draw Brick Wall on the Left (Corner)
+            ctx.fillStyle = '#1f080b';
+            ctx.fillRect(0, 0, wallRightX, h);
+            ctx.strokeStyle = '#c9a23f';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(wallRightX, 0);
+            ctx.lineTo(wallRightX, h);
+            ctx.stroke();
+
+            ctx.fillStyle = '#f2cf66';
+            ctx.font = '11px "JetBrains Mono", monospace';
+            ctx.fillText('ESQUINA DE CAMPANA', 12, 24);
+        }
+
+        /* ==========================================================================
+           7. ZERO-CLIENTS STARTUP DECK & MANUSCRIPT READER CONTROLS
+           ========================================================================== */
+        const STARTUP_PLANS = [
+            {
+                title: 'Fase 1: Dominación Total del Corredor Campana-Zárate-Shanghái',
+                desc: 'Misión corporativa: sinergia disruptiva de consultoría integral multi-rubro con logos minimalistas en dorado imperial. Estado actual: esperando que aunque sea un tío pregunte cuánto sale el presupuesto.'
+            },
+            {
+                title: 'Fase 2: Franquicias Fluviales en Lanchas del Paraná',
+                desc: 'Expansión B2B con 42 diapositivas de PowerPoint, organigrama de 14 directores ejecutivos (todos somos Juan y yo) y facturación proyectada de $100M. Clientes registrados hoy: 0.'
+            },
+            {
+                title: 'Fase 3: Holding Internacional Post-Resurrección del Dragón',
+                desc: 'Tercer plan de negocios perfeccionado después del encuentro con Nico. Identidad visual aún más espectacular, manual de marca de 90 páginas y la misma cantidad histórica de clientes: cero absoluto.'
+            }
+        ];
+
+        function switchStartupPlan(idx) {
+            document.getElementById('startup-plan-title').textContent = STARTUP_PLANS[idx].title;
+            document.getElementById('startup-plan-desc').textContent = STARTUP_PLANS[idx].desc;
+        }
+
+        function attemptToGetClient() {
+            const btnText = document.getElementById('client-btn-text');
+            btnText.textContent = 'Buscando cliente en Campana...';
+            setTimeout(() => {
+                document.getElementById('zero-clients-counter').textContent = '0';
+                btnText.textContent = 'Resultado: Cero Clientes (Pero el logo quedó increíble)';
+                showToast('Emprendimiento S.A.', 'Actualización de mercado: seguimos con 3 planes de negocio y 0 clientes.');
+            }, 650);
+        }
+
+        let currentReaderFontSize = 19;
+        let directorNotesVisible = true;
+
+        function changeStoryFontSize(delta) {
+            currentReaderFontSize = Math.max(15, Math.min(26, currentReaderFontSize + delta * 2));
+            document.getElementById('manuscript-reader-body').style.fontSize = `${currentReaderFontSize}px`;
+        }
+
+        function toggleStoryNotes() {
+            directorNotesVisible = !directorNotesVisible;
+            const notes = document.querySelectorAll('.director-annotation');
+            notes.forEach(n => n.style.display = directorNotesVisible ? 'block' : 'none');
+            document.getElementById('btn-story-notes').innerHTML = `<i class="fa-solid fa-video"></i> <span>Desglose de Cámara: ${directorNotesVisible ? 'VISIBLE' : 'OCULTO'}</span>`;
+        }
+
+        function filterManuscriptChapter(chapterKey) {
+            const blocks = document.querySelectorAll('.ms-chapter-block');
+            blocks.forEach(b => {
+                if (chapterKey === 'all' || b.dataset.chapter === chapterKey) {
+                    b.style.display = 'block';
+                } else {
+                    b.style.display = 'none';
+                }
+            });
+        }
+
+        function toggleAmbientMode() {
+            const backdrop = document.getElementById('yt-ambient-backdrop');
+            const label = document.getElementById('ambient-toggle-label');
+            if (backdrop.classList.contains('hidden')) {
+                backdrop.classList.remove('hidden');
+                label.textContent = 'Luz Ambiental: ON';
+            } else {
+                backdrop.classList.add('hidden');
+                label.textContent = 'Luz Ambiental: OFF';
+            }
+        }
+
+        function toggleDirectorCommentary() {
+            const hud = document.getElementById('director-hud-overlay');
+            const label = document.getElementById('commentary-toggle-label');
+            if (hud.classList.contains('opacity-0')) {
+                hud.classList.remove('opacity-0');
+                label.textContent = 'Notas Director: ON';
+            } else {
+                hud.classList.add('opacity-0');
+                label.textContent = 'Notas Director: OFF';
+            }
+        }
+
+        /* ==========================================================================
+           8. WEB AUDIO API PROCEDURAL INDOCHINA-PARANÁ SOUNDSCAPE
+           ========================================================================== */
+        let audioCtx = null;
+        let isSoundscapePlaying = false;
+        let droneOsc1 = null, droneOsc2 = null, droneGain = null;
+
+        function toggleAmbientSoundscape() {
+            if (!isSoundscapePlaying) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (!audioCtx) audioCtx = new AudioContextClass();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                droneOsc1 = audioCtx.createOscillator();
+                droneOsc2 = audioCtx.createOscillator();
+                droneGain = audioCtx.createGain();
+
+                droneOsc1.type = 'sine';
+                droneOsc1.frequency.setValueAtTime(110, audioCtx.currentTime); // A2 Deep Jade Drone
+                droneOsc2.type = 'triangle';
+                droneOsc2.frequency.setValueAtTime(164.81, audioCtx.currentTime); // E3 Fifth interval
+
+                droneGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+
+                droneOsc1.connect(droneGain);
+                droneOsc2.connect(droneGain);
+                droneGain.connect(audioCtx.destination);
+
+                droneOsc1.start();
+                droneOsc2.start();
+                isSoundscapePlaying = true;
+                document.getElementById('soundscape-icon').className = 'fa-solid fa-volume-high text-emerald-400';
+                document.getElementById('soundscape-label').textContent = 'Banda Sonora: Activa';
+                showToast('Audio Cinematográfico', 'Sintetizador Atmosférico del Paraná activado.');
+            } else {
+                if (droneOsc1) { try { droneOsc1.stop(); } catch (e) {} }
+                if (droneOsc2) { try { droneOsc2.stop(); } catch (e) {} }
+                isSoundscapePlaying = false;
+                document.getElementById('soundscape-icon').className = 'fa-solid fa-volume-xmark text-indochina-gold';
+                document.getElementById('soundscape-label').textContent = 'Banda Sonora: Silenciada';
+            }
+        }
+
+        /* ==========================================================================
+           9. DOWNLOAD SIMULATOR MODAL & REAL .MD DOWNLOADER
+           ========================================================================== */
+        let downloadInterval = null;
+
+        function startMovieDownload(filename, filesize, edition) {
+            const modal = document.getElementById('download-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            document.getElementById('modal-filename').textContent = filename;
+            document.getElementById('modal-filesize-tag').textContent = `Tamaño: ${filesize}`;
+            document.getElementById('modal-edition-tag').textContent = `Edición: ${edition}`;
+
+            let pct = 0;
+            const bar = document.getElementById('modal-progress-bar');
+            const pctText = document.getElementById('modal-progress-pct');
+            const stepText = document.getElementById('modal-status-step');
+
+            if (downloadInterval) clearInterval(downloadInterval);
+            downloadInterval = setInterval(() => {
+                pct += Math.random() * 14 + 4;
+                if (pct >= 100) {
+                    pct = 100;
+                    clearInterval(downloadInterval);
+                    stepText.textContent = '¡Enlace DCP verificado! Iniciando descarga del paquete de prensa...';
+                    downloadRealMarkdownFile();
+                } else if (pct > 60) {
+                    stepText.textContent = 'Sincronizando pistas Dolby Atmos & Subtítulos de Campana...';
+                } else if (pct > 25) {
+                    stepText.textContent = 'Descargando fragmentos desde Nodo Isla del Paraná...';
+                }
+                bar.style.width = `${pct}%`;
+                pctText.textContent = `${Math.floor(pct)}%`;
+            }, 260);
+        }
+
+        function closeDownloadModal() {
+            const modal = document.getElementById('download-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            if (downloadInterval) clearInterval(downloadInterval);
+        }
+
+        function downloadRealMarkdownFile() {
+            const blob = new Blob([VERBATIM_MARKDOWN_STORY], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'La_Resurreccion_Del_Dragon_El_Cuello_Del_Dragon.md';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Archivo Descargado', 'Se descargó el manuscrito completo «El cuello del dragón.md» en tu dispositivo.');
+        }
+
+        function copyDirectDownloadLink() {
+            const input = document.getElementById('direct-link-input');
+            input.select();
+            document.execCommand('copy');
+            showToast('Enlace Copiado', 'Link Magnet/Directo copiado al portapapeles.');
+        }
+
+        function copyYouTubeEmbedLink() {
+            const input = document.getElementById('direct-link-input');
+            input.select();
+            document.execCommand('copy');
+            showToast('YouTube Embed', 'Enlace del reproductor embebido copiado al portapapeles.');
+        }
+
+        function saveToWatchLater() {
+            showToast('Guardado en Lista', '«La resurrección del dragón (2026)» se guardó en tu colección de Campana Noir.');
+        }
+
+        /* ==========================================================================
+           10. MAIN ANIMATION LOOP & WINDOW ONLOAD INITIALIZATION
+           ========================================================================== */
+        function animateMainLoop(timestamp) {
+            requestAnimationFrame(animateMainLoop);
+
+            // Update Three.js 3D Scene
+            if (scene && camera && renderer) {
+                const t = timestamp * 0.001;
+                dragonSegments.forEach((seg, i) => {
+                    const waveX = Math.sin(t * 1.8 - i * 0.35) * 6.5;
+                    const waveY = Math.cos(t * 1.3 - i * 0.28) * 3.2;
+                    const waveZ = -i * 0.75 + Math.sin(t - i * 0.2) * 2;
+                    seg.position.set(waveX, waveY, waveZ);
+                    seg.rotation.x = t + i * 0.15;
+                    seg.rotation.y = t * 0.7 + i * 0.1;
+                });
+
+                lanterns.forEach(l => {
+                    l.position.y += l.userData.speedY;
+                    l.rotation.y += 0.015;
+                    if (l.position.y > 14) l.position.y = -14;
+                });
+
+                if (cameraMode === 0) {
+                    camera.position.x = Math.sin(cameraAngleX) * 22;
+                    camera.position.z = Math.cos(cameraAngleX) * 22;
+                    camera.position.y = 4 + cameraAngleY * 10;
+                } else if (cameraMode === 1 && dragonSegments[0]) {
+                    camera.position.x = dragonSegments[0].position.x * 0.6;
+                    camera.position.y = dragonSegments[0].position.y + 2;
+                    camera.position.z = 12;
+                } else {
+                    camera.position.set(0, 18, 8);
+                }
+                camera.lookAt(0, 0, -4);
+                renderer.render(scene, camera);
+            }
+
+            // Update 2D Interactive Canvases
+            renderYouTubeCinemaFrame(timestamp || 0);
+            renderNeckSimulator(timestamp || 0);
+        }
+
+        window.onload = function () {
+            initThreeJSBackground();
+            selectCinemaAct(0);
+            inspectRumorNode(0);
+            animateMainLoop(0);
+        };
     </script>
 </body>
 </html>
